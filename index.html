@@ -41,14 +41,7 @@
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            text-shadow: 0 2px 12px rgba(123,44,191,0.25);
             cursor: pointer;
-            animation: glowTitle 4s ease-in-out infinite alternate;
-        }
-
-        @keyframes glowTitle {
-            0% { filter: brightness(1); }
-            100% { filter: brightness(1.25); }
         }
 
         .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -103,7 +96,6 @@
         .size-btn { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
         .size-btn.active { border-color: #000; background: #000; color: #FFF; }
         .color-thumb { width: 36px; height: 36px; border-radius: 4px; border: 2px solid transparent; cursor: pointer; }
-        .color-thumb.active { border-color: #000; }
 
         .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border-color); z-index: 1000; transition: right 0.4s ease; padding: 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
         .cart-drawer.open { right: 0; }
@@ -179,7 +171,7 @@
     <!-- Modal Detalle SHEIN -->
     <div class="modal" id="modalProductDetail">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalProductDetail')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalProductDetail')">&times;</span>
             <div class="shein-detail-box" id="sheinDetailContent"></div>
         </div>
     </div>
@@ -188,7 +180,7 @@
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
             <h3 id="txtCartTitle">Carrito de Compras</h3>
-            <button class="btn" onclick="toggleCart()">✕</button>
+            <button class="btn" onclick="toggleCart()">&times;</button>
         </div>
         <div class="cart-items" id="cartItems"></div>
         
@@ -210,7 +202,7 @@
         <div class="bot-window" id="botWindow">
             <div class="bot-header">
                 <span id="botTitle">Asistente Aetheria IA & Registro</span>
-                <span style="cursor:pointer" onclick="toggleBot()">✕</span>
+                <span style="cursor:pointer" onclick="toggleBot()">&times;</span>
             </div>
             <div class="bot-messages" id="botMessages"></div>
             <div class="bot-input-area">
@@ -224,7 +216,7 @@
     <!-- Modales adicionales -->
     <div class="modal" id="modalCheckout">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalCheckout')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalCheckout')">&times;</span>
             <h3 id="txtPayTitle">Pago con USDT (Red TRON)</h3>
             <p style="margin: 10px 0; font-size:0.9rem;" id="txtPayDesc">Transfiere el monto exacto de tu recibo a la siguiente dirección de la red TRON (TRC-20):</p>
             <div class="wallet-address">TVAS4UkAGaUx6UuaFxq2DAvkDskJiHevn3</div>
@@ -235,7 +227,7 @@
 
     <div class="modal" id="modalSupplier">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalSupplier')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalSupplier')">&times;</span>
             <h3 id="txtSupTitle">Portal de Publicidad para Proveedores</h3>
             <p style="margin: 10px 0; font-size:0.85rem;" id="txtSupDesc">Promociona tus productos en Aetheria Market. Tarifas de espacio publicitario:</p>
             <ul style="margin-left: 20px; font-size:0.85rem; margin-bottom: 10px;">
@@ -252,7 +244,7 @@
 
     <div class="modal" id="modalFeedback">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalFeedback')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalFeedback')">&times;</span>
             <h3 id="txtFeedTitle">Buzón de Quejas y Sugerencias</h3>
             <textarea style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" id="txtFeedbackInput" placeholder="Déjanos tu opinión..."></textarea>
             <button class="btn btn-primary" style="width: 100%;" onclick="submitFeedback()" id="btnSendFeed">Enviar Opinión</button>
@@ -261,7 +253,7 @@
 
     <div class="modal" id="modalQRVerification">
         <div class="modal-content" style="text-align: center;">
-            <span class="close-modal" onclick="closeModal('modalQRVerification')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalQRVerification')">&times;</span>
             <h3 id="txtQRTitle">Verificación Anti-Bot</h3>
             <p style="font-size:0.85rem; margin: 10px 0;" id="txtQRDesc">Escanea este código QR dinámico desde tu dispositivo móvil para validar que eres un usuario humano real.</p>
             <div class="qr-placeholder" id="qrVerifyContainer"></div>
@@ -271,7 +263,7 @@
 
     <div class="modal" id="modalLegal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('modalLegal')">✕</span>
+            <span class="close-modal" onclick="closeModal('modalLegal')">&times;</span>
             <h3 style="margin-bottom: 10px;" id="txtLegalTitle">Marco Jurídico y Derechos de Autor</h3>
             <div class="legal-text" id="txtLegalBody">
                 <p><strong>PRIMERO: PROPIEDAD INTELECTUAL Y DERECHOS RESERVADOS.</strong> Todo el material visual, marcas de agua, interfaces de código, diseños arquitectónicos y logotipos exhibidos en este portal web constituyen propiedad exclusiva de <em>Tienda Virtual Aetheria Market</em>. Queda estrictamente prohibida la reproducción parcial o total sin consentimiento previo expreso y por escrito.</p><br>
@@ -333,22 +325,22 @@
         const sizesList = ['0(XXS)', '2(XS)', '4(S)', '6(M)', '8/10(L)', '12(XL)', '14(XXL)'];
 
         const reviewPool = [
-            { text: "Excelente calidad, superó mis expectativas por el precio.", type: "pos" },
-            { text: "Me gustó bastante, aunque el color varía ligeramente en persona.", type: "mixed" },
-            { text: "La tela es suave y cómoda, tardó un poco el envío pero valió la pena.", type: "pos" },
-            { text: "No es exactamente lo que esperaba en el grosor, pero cumple su función.", type: "neg" },
-            { text: "¡Impecable! Excelente presentación y llegó sellado perfectamente.", type: "pos" },
-            { text: "El tamaño vino un poco justo, recomiendo pedir una talla más.", type: "mixed" },
-            { text: "Diseño elegante y de muy buena categoría. Totalmente recomendado.", type: "pos" },
-            { text: "Buena relación calidad-precio, aunque el empaque venía algo doblado.", type: "mixed" },
-            { text: "¡Una maravilla! Lo volvería a comprar sin duda alguna.", type: "pos" },
-            { text: "Calidad estándar para el costo, nada extraordinario pero aceptable.", type: "mixed" }
+            "Excelente calidad, superó mis expectativas por el precio.",
+            "Me gustó bastante, aunque el color varía ligeramente en persona.",
+            "La tela es suave y cómoda, tardó un poco el envío pero valió la pena.",
+            "No es exactamente lo que esperaba en el grosor, pero cumple su función.",
+            "¡Impecable! Excelente presentación y llegó sellado perfectamente.",
+            "El tamaño vino un poco justo, recomiendo pedir una talla más.",
+            "Diseño elegante y de muy buena categoría. Totalmente recomendado.",
+            "Buena relación calidad-precio, aunque el empaque venía algo doblado.",
+            "¡Una maravilla! Lo volvería a comprar sin duda alguna.",
+            "Calidad estándar para el costo, nada extraordinario pero aceptable."
         ];
 
         function getRandomReviews(seedId) {
             let r1 = reviewPool[(seedId * 3) % reviewPool.length];
             let r2 = reviewPool[(seedId * 7 + 1) % reviewPool.length];
-            if (r1.text === r2.text) r2 = reviewPool[(seedId + 2) % reviewPool.length];
+            if (r1 === r2) r2 = reviewPool[(seedId + 2) % reviewPool.length];
             return [r1, r2];
         }
 
@@ -404,12 +396,8 @@
             }
 
             const label = (categoryLabels[categoryName] || categoryName).toUpperCase();
-            const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-                <rect width="300" height="300" fill="${bgGradient}"/>
-                ${graphicInner}
-                <text x="50%" y="88%" dominant-baseline="middle" text-anchor="middle" fill="%231E293B" font-family="sans-serif" font-weight="bold" font-size="13">${label} MOD-${modelNum}</text>
-            </svg>`;
-            return `data:image/svg+xml;utf8,${svgStr}`;
+            const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="${bgGradient}"/>${graphicInner}<text x="50%" y="88%" dominant-baseline="middle" text-anchor="middle" fill="%231E293B" font-family="sans-serif" font-weight="bold" font-size="13">${label} MOD-${modelNum}</text></svg>`;
+            return `data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}`;
         }
 
         function generate300Products() {
@@ -421,17 +409,16 @@
                     let basePrice;
                     let isVip = false;
                     
-                    // Asignación estricta de precios solicitados por el usuario
                     if (c === 'ropa_interior' && i <= 15) {
-                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2)); // 0.50 a 1.00 USDT para ropa interior sencilla y medias
+                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2));
                     } else if (i <= 8) {
-                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2)); // Rango inicial económico general
+                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2));
                     } else if (i <= 38) {
-                        basePrice = parseFloat((Math.random() * (25 - 4) + 4).toFixed(2)); // Ropa barata y demás artículos de 4 a 25 USDT
+                        basePrice = parseFloat((Math.random() * (25 - 4) + 4).toFixed(2));
                     } else if (i <= 43) {
-                        basePrice = parseFloat((Math.random() * (50 - 26) + 26).toFixed(2)); // Estándar hasta 50 USDT
+                        basePrice = parseFloat((Math.random() * (50 - 26) + 26).toFixed(2));
                     } else {
-                        basePrice = parseFloat((Math.random() * (160 - 55) + 55).toFixed(2)); // Alta gama y VIP
+                        basePrice = parseFloat((Math.random() * (160 - 55) + 55).toFixed(2));
                         isVip = true;
                     }
 
@@ -475,7 +462,7 @@
                     </div>
                     <div class="product-details">
                         <div class="product-title">${p.title}</div>
-                        <div class="product-review">"${p.reviews[0].text}"</div>
+                        <div class="product-review">"${p.reviews[0]}"</div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
                             <div>
                                 <span class="product-price">${p.price.toFixed(2)} USDT</span>
@@ -494,7 +481,7 @@
             const container = document.getElementById('sheinDetailContent');
             
             let colorThumbsHTML = colorsList.map(c => `
-                <div class="color-thumb" style="background:${c}; border: 1px solid #ccc;" onclick="selectColor(this)"></div>
+                <div class="color-thumb" style="background:${c}; border: 1px solid #ccc; width:36px; height:36px; border-radius:4px; cursor:pointer;" onclick="selectColor(this)"></div>
             `).join('');
 
             let sizeBtnsHTML = sizesList.map(s => `
@@ -502,13 +489,13 @@
             `).join('');
 
             let reviewsHTML = p.reviews.map(r => `
-                <div class="review-list-item">⭐ "${r.text}"</div>
+                <div class="review-list-item">⭐ "${r}"</div>
             `).join('');
 
             container.innerHTML = `
                 <div>
                     <div class="img-container" style="height:320px; border-radius:8px;">
-                        <img src="${p.img}" class="product-img" id="detailMainImg">
+                        <img src="${p.img}" class="product-img" id="detailMainImg" alt="${p.title}">
                         <div class="watermark">AETHERIA MARKET</div>
                     </div>
                 </div>
@@ -609,7 +596,7 @@
                         <div style="font-weight:bold; font-size:0.85rem;">${item.title}</div>
                         <div style="font-size:0.75rem; color:var(--text-muted);">Talla: ${item.selectedSize || 'M'} | ${item.price.toFixed(2)} USDT</div>
                     </div>
-                    <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="removeFromCart(${index})">✕</button>
+                    <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="removeFromCart(${index})">&times;</button>
                 `;
                 container.appendChild(div);
             });
@@ -780,7 +767,6 @@
             closeModal('modalFeedback');
         }
 
-        // Inicializar catálogo con todas las especificaciones solicitadas
         renderProducts(products);
     </script>
 </body>
