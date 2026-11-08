@@ -31,7 +31,7 @@
         body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
 
         header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 1400px; margin: 0 auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
         
         .brand-title {
             font-size: 2rem;
@@ -45,14 +45,14 @@
             cursor: pointer;
         }
 
-        .header-controls { display: flex; gap: 12px; align-items: center; }
+        .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary-gradient); color: #FFF; border: none; }
-        .btn-shein { background: #000; color: #FFF; border: none; border-radius: 4px; padding: 12px 24px; font-weight: bold; width: 100%; text-transform: uppercase; }
+        .btn-shein { background: #000; color: #FFF; border: none; border-radius: 4px; padding: 12px 24px; font-weight: bold; width: 100%; text-transform: uppercase; cursor: pointer; }
 
-        nav { background: rgba(0,0,0,0.03); border-top: 1px solid var(--border-color); }
-        .nav-links { display: flex; justify-content: center; list-style: none; gap: 20px; padding: 12px; flex-wrap: wrap; }
-        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+        nav { background: rgba(0,0,0,0.03); border-top: 1px symbol(var(--border-color)); border-top: 1px solid var(--border-color); }
+        .nav-links { display: flex; justify-content: center; list-style: none; gap: 15px; padding: 12px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
 
         .filters-bar { max-width: 1400px; margin: 20px auto; padding: 0 5%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .search-select { padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); outline: none; }
@@ -62,8 +62,8 @@
         .product-card { background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow); cursor: pointer; }
         .product-card:hover { transform: translateY(-4px); }
 
-        .img-container { position: relative; width: 100%; height: 280px; background: #F8FAFC; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .img-container { position: relative; width: 100%; height: 260px; background: #E2E8F0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
         
         .watermark {
             position: absolute;
@@ -71,11 +71,13 @@
             transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 1rem;
             font-weight: 900;
-            color: rgba(0, 0, 0, 0.25);
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
             white-space: nowrap;
             pointer-events: none;
             text-transform: uppercase;
             letter-spacing: 2px;
+            z-index: 5;
         }
 
         .product-details { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
@@ -83,10 +85,9 @@
         .product-review { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-bottom: 8px; }
         .product-price { font-size: 1.15rem; font-weight: 800; color: var(--shein-red); }
 
-        .badge-discount { position: absolute; top: 10px; right: 10px; background: var(--shein-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-        .badge-vip { position: absolute; top: 10px; left: 10px; background: #7B2CBF; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .badge-discount { position: absolute; top: 10px; right: 10px; background: var(--shein-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; z-index: 6; }
+        .badge-vip { position: absolute; top: 10px; left: 10px; background: #7B2CBF; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; z-index: 6; }
 
-        /* Estilos Detalle Producto tipo SHEIN */
         .shein-detail-box { display: flex; flex-direction: column; gap: 15px; }
         @media(min-width: 768px) {
             .shein-detail-box { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
@@ -98,7 +99,6 @@
         .color-thumb { width: 36px; height: 36px; border-radius: 4px; border: 2px solid transparent; cursor: pointer; }
         .color-thumb.active { border-color: #000; }
 
-        /* Carrito */
         .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border-color); z-index: 1000; transition: right 0.4s ease; padding: 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
         .cart-drawer.open { right: 0; }
         .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
@@ -108,13 +108,11 @@
         .receipt-box { background: rgba(0,0,0,0.03); border: 1px dashed var(--border-color); padding: 15px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px; }
         .receipt-line { display: flex; justify-content: space-between; margin-bottom: 5px; }
 
-        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: var(--bg-card); border-radius: 12px; padding: 25px; max-width: 650px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
         .close-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.5rem; }
 
-        /* Bot Widget */
         .bot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 950; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
         .bot-window { width: 320px; height: 420px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; display: none; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
         .bot-window.active { display: flex; }
@@ -144,7 +142,8 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="#" onclick="filterCat('all')" id="n-all">Todos</a></li>
-                <li><a href="#" onclick="filterCat('belleza')" id="n-beauty">Belleza & Cosmética</a></li>
+                <li><a href="#" onclick="filterCat('belleza')" id="n-beauty">Belleza</a></li>
+                <li><a href="#" onclick="filterCat('cosmetica')" id="n-cosmetics">Cosmética</a></li>
                 <li><a href="#" onclick="filterCat('ropa')" id="n-clothes">Ropa</a></li>
                 <li><a href="#" onclick="filterCat('ropa_interior')" id="n-lingerie">Ropa Interior</a></li>
                 <li><a href="#" onclick="filterCat('perfumes')" id="n-perfumes">Perfumes</a></li>
@@ -288,7 +287,7 @@
                 sendFeed: "Enviar Opinión", qrTitle: "Verificación Anti-Bot", qrDesc: "Escanea este código QR dinámico para validar que eres un usuario humano real.",
                 verified: "Usuario Validado", legalTitle: "Marco Jurídico y Derechos de Autor", sortLbl: "Ordenar por:",
                 sortAsc: "Precio: Más Baratos (0.50 - 1.00 USDT Primero)", sortDesc: "Precio: Mayor a Menor (Exclusivos & VIP)",
-                nAll: "Todos", nBeauty: "Belleza & Cosmética", nClothes: "Ropa", nLingerie: "Ropa Interior", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
+                nAll: "Todos", nBeauty: "Belleza", nCosmetics: "Cosmética", nClothes: "Ropa", nLingerie: "Ropa Interior", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
                 botTitle: "Asistente Aetheria IA & Registro"
             },
             en: {
@@ -302,7 +301,7 @@
                 sendFeed: "Submit Feedback", qrTitle: "Anti-Bot Verification", qrDesc: "Scan this dynamic QR code to verify you are a real human.",
                 verified: "User Verified", legalTitle: "Legal Framework & Copyright", sortLbl: "Sort by:",
                 sortAsc: "Price: Lowest First (0.50 - 1.00 USDT)", sortDesc: "Price: High to Low (Exclusive & VIP)",
-                nAll: "All", nBeauty: "Beauty & Cosmetics", nClothes: "Clothing", nLingerie: "Lingerie", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
+                nAll: "All", nBeauty: "Beauty", nCosmetics: "Cosmetics", nClothes: "Clothing", nLingerie: "Lingerie", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
                 botTitle: "Aetheria AI Assistant & Onboarding"
             }
         };
@@ -312,9 +311,10 @@
         let products = [];
         let currentSelectedSize = 'M';
 
-        const categories = ['belleza', 'ropa', 'ropa_interior', 'perfumes', 'zapatos', 'relojes'];
+        const categories = ['belleza', 'cosmetica', 'ropa', 'ropa_interior', 'perfumes', 'zapatos', 'relojes'];
         const categoryLabels = {
             'belleza': 'Belleza',
+            'cosmetica': 'Cosmética',
             'ropa': 'Ropa',
             'ropa_interior': 'Ropa Interior',
             'perfumes': 'Perfumes',
@@ -325,14 +325,63 @@
         const colorsList = ['#8B0000', '#4B0082', '#000000', '#FFC0CB', '#808080', '#FFFFFF'];
         const sizesList = ['0(XXS)', '2(XS)', '4(S)', '6(M)', '8/10(L)', '12(XL)', '14(XXL)'];
 
-        function getSVGImage(colorHex, categoryName, modelNum) {
-            const encodedColor = encodeURIComponent(colorHex);
+        // Función gráfica SVG optimizada con iconos realistas según el tipo de producto de belleza, ropa, perfumes, zapatos, relojes y cosmética
+        function getSVGImage(categoryName, modelNum) {
+            let graphicInner = '';
+            let bgGradient = '%23E2E8F0';
+            
+            if (categoryName === 'belleza' || categoryName === 'cosmetica') {
+                bgGradient = '%23FCE7F3';
+                graphicInner = `
+                    <rect x="120" y="80" width="60" height="110" rx="10" fill="%23DB2777"/>
+                    <rect x="135" y="55" width="30" height="25" rx="4" fill="%239D174D"/>
+                    <path d="M100 190 Q150 230 200 190 Z" fill="%23F43F5E"/>
+                `;
+            } else if (categoryName === 'ropa') {
+                bgGradient = '%23E0F2FE';
+                graphicInner = `
+                    <path d="M90 80 L130 65 L170 65 L210 80 L230 140 L190 150 L180 220 L120 220 L110 150 L70 140 Z" fill="%230284C7"/>
+                    <circle cx="150" cy="95" r="15" fill="%23E0F2FE"/>
+                `;
+            } else if (categoryName === 'ropa_interior') {
+                bgGradient = '%23FEE2E2';
+                graphicInner = `
+                    <path d="M90 90 Q150 130 210 90 L210 180 Q150 220 90 180 Z" fill="%23DC2626"/>
+                    <circle cx="120" cy="135" r="15" fill="%23FEE2E2"/>
+                    <circle cx="180" cy="135" r="15" fill="%23FEE2E2"/>
+                `;
+            } else if (categoryName === 'perfumes') {
+                bgGradient = '%23FEF3C7';
+                graphicInner = `
+                    <polygon points="120,95 180,95 190,210 110,210" fill="%23D97706"/>
+                    <rect x="135" y="70" width="30" height="25" fill="%23B45309"/>
+                    <rect x="142" y="50" width="16" height="20" fill="%23F59E0B"/>
+                `;
+            } else if (categoryName === 'zapatos') {
+                bgGradient = '%23EDE9FE';
+                graphicInner = `
+                    <path d="M70 160 C70 130, 120 130, 160 140 C210 150, 230 180, 230 195 C230 210, 80 210, 70 160 Z" fill="%237C3AED"/>
+                    <rect x="190" y="155" width="25" height="15" fill="%235B21B6"/>
+                `;
+            } else if (categoryName === 'relojes') {
+                bgGradient = '%23F3F4F6';
+                graphicInner = `
+                    <circle cx="150" cy="150" r="55" fill="%231F2937" stroke="%239CA3AF" stroke-width="8"/>
+                    <circle cx="150" cy="150" r="45" fill="%23FFFFFF"/>
+                    <line x1="150" y1="150" x2="150" y2="120" stroke="%23111827" stroke-width="4" stroke-linecap="round"/>
+                    <line x1="150" y1="150" x2="175" y2="150" stroke="%23111827" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="140" y="75" width="20" height="20" fill="%234B5563"/>
+                    <rect x="140" y="205" width="20" height="20" fill="%234B5563"/>
+                `;
+            } else {
+                graphicInner = `<circle cx="150" cy="150" r="70" fill="%23475569"/>`;
+            }
+
             const label = (categoryLabels[categoryName] || categoryName).toUpperCase();
             const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
-                <rect width="300" height="300" fill="%23F1F5F9"/>
-                <circle cx="150" cy="130" r="80" fill="${encodedColor}" opacity="0.85"/>
-                <path d="M110 120 L190 120 L170 200 L130 200 Z" fill="%23FFFFFF" opacity="0.3"/>
-                <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23334155" font-family="sans-serif" font-weight="bold" font-size="14">${label} MOD-${modelNum}</text>
+                <rect width="300" height="300" fill="${bgGradient}"/>
+                ${graphicInner}
+                <text x="50%" y="88%" dominant-baseline="middle" text-anchor="middle" fill="%231E293B" font-family="sans-serif" font-weight="bold" font-size="13">${label} MOD-${modelNum}</text>
             </svg>`;
             return `data:image/svg+xml;utf8,${svgStr}`;
         }
@@ -342,14 +391,14 @@
             let id = 1;
             
             for (let c of categories) {
-                for (let i = 1; i <= 50; i++) {
+                // Alrededor de 43-45 productos por categoría para totalizar más de 300 ítems variados
+                for (let i = 1; i <= 45; i++) {
                     let basePrice;
                     let isVip = false;
                     
-                    // Distribución de precios: ultra baratos (0.50 - 1.00 USDT), estándar (<50 USDT) y VIP (>50 USDT)
                     if (i <= 10) {
                         basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2));
-                    } else if (i <= 45) {
+                    } else if (i <= 40) {
                         basePrice = parseFloat((Math.random() * (48 - 1.5) + 1.5).toFixed(2));
                     } else {
                         basePrice = parseFloat((Math.random() * (150 - 55) + 55).toFixed(2));
@@ -358,8 +407,7 @@
 
                     let originalPrice = parseFloat((basePrice * 1.35).toFixed(2));
                     let catLabel = categoryLabels[c];
-                    let titleEs = `${catLabel} ${brands[i % 5]} ${isVip ? 'Colección VIP' : 'Moda Unisex'} Mod-${i}`;
-                    let chosenColor = colorsList[i % colorsList.length];
+                    let titleEs = `${catLabel} ${brands[i % 5]} ${isVip ? 'Colección VIP Exclusiva' : 'Modelo Unisex Versátil'} Mod-${i}`;
 
                     list.push({
                         id: id++,
@@ -367,16 +415,15 @@
                         title: titleEs,
                         price: basePrice,
                         originalPrice: originalPrice,
-                        review: `Reseña: Calidad premium comprobada ⭐ 4.89 (1000+). Tallas ajustables y textil suave.`,
-                        img: getSVGImage(chosenColor, c, i),
-                        colorHex: chosenColor,
+                        review: `Reseña: Excelente calidad certificada ⭐ 4.9 (1200+ valoraciones). Acabado profesional.`,
+                        img: getSVGImage(c, i),
                         model: `V-${100+i}`,
                         discount: Math.floor(((originalPrice - basePrice) / originalPrice) * 100),
                         isVip: isVip
                     });
                 }
             }
-            // Ordenar por defecto de menor a mayor precio (desglose desde los más baratos)
+            // Ordenar por defecto de menor a mayor precio (mostrando primero de 0.50 a 1.00 USDT)
             return list.sort((a, b) => a.price - b.price);
         }
 
@@ -393,7 +440,7 @@
                     ${p.isVip ? '<div class="badge-vip">VIP / Alta Gama</div>' : ''}
                     <div class="badge-discount">-${p.discount}%</div>
                     <div class="img-container">
-                        <img src="${p.img}" class="product-img" alt="${p.title}">
+                        <img src="${p.img}" class="product-img" alt="${p.title}" loading="lazy">
                         <div class="watermark">AETHERIA MARKET</div>
                     </div>
                     <div class="product-details">
@@ -417,7 +464,7 @@
             const container = document.getElementById('sheinDetailContent');
             
             let colorThumbsHTML = colorsList.map(c => `
-                <div class="color-thumb ${c === p.colorHex ? 'active' : ''}" style="background:${c};" onclick="selectColor(this)"></div>
+                <div class="color-thumb" style="background:${c}; border: 1px solid #ccc;" onclick="selectColor(this)"></div>
             `).join('');
 
             let sizeBtnsHTML = sizesList.map(s => `
@@ -426,7 +473,7 @@
 
             container.innerHTML = `
                 <div>
-                    <div class="img-container" style="height:350px; border-radius:8px;">
+                    <div class="img-container" style="height:320px; border-radius:8px;">
                         <img src="${p.img}" class="product-img" id="detailMainImg">
                         <div class="watermark">AETHERIA MARKET</div>
                     </div>
@@ -469,8 +516,8 @@
         }
 
         function selectColor(thumb) {
-            document.querySelectorAll('.color-thumb').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
+            document.querySelectorAll('.color-thumb').forEach(t => t.style.borderColor = '#ccc');
+            thumb.style.borderColor = '#000';
         }
 
         function sortProducts() {
@@ -592,6 +639,7 @@
             document.getElementById('optDesc').innerText = t.sortDesc;
             document.getElementById('n-all').innerText = t.nAll;
             document.getElementById('n-beauty').innerText = t.nBeauty;
+            document.getElementById('n-cosmetics').innerText = t.nCosmetics;
             document.getElementById('n-clothes').innerText = t.nClothes;
             document.getElementById('n-lingerie').innerText = t.nLingerie;
             document.getElementById('n-perfumes').innerText = t.nPerfumes;
