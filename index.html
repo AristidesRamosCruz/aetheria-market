@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aetheria Market - Tienda Inteligente</title>
+    <title>Aetheria Market - Ecosistema de Comercio Inteligente</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Alpine.js -->
@@ -11,31 +11,36 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans antialiased" x-data="storeData()">
 
-    <!-- Header / Navbar -->
+    <!-- Header / Navbar Principal -->
     <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
-                Aetheria Market
-            </h1>
-            <div class="flex items-center gap-4">
-                <!-- Botón Panel de IA (Optimización / Subida automática) -->
-                <button @click="aiPanel = true" class="bg-indigo-600/30 border border-indigo-500 text-indigo-300 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-indigo-600/50 transition">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
+                    Aetheria Market
+                </h1>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full hidden sm:inline-block">Ropa y Accesorios</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Botón de Panel IA & Ops -->
+                <button @click="aiPanel = true" class="bg-indigo-600/30 border border-indigo-500 text-indigo-300 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-indigo-600/50 transition flex items-center gap-1.5">
                     🤖 IA Ops & Admin
                 </button>
-                <!-- Botón Carrito -->
-                <button @click="cartOpen = true" class="relative bg-slate-800 p-2 rounded-lg hover:bg-slate-700 transition">
+                <!-- Botón del Carrito -->
+                <button @click="cartOpen = true" class="relative bg-slate-800 p-2.5 rounded-lg hover:bg-slate-700 transition">
                     🛒 <span class="absolute -top-1 -right-1 bg-cyan-500 text-slate-950 text-xs font-bold px-1.5 rounded-full" x-text="cart.length"></span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Banner de Publicidad / Patrocinadores -->
-    <section class="bg-gradient-to-r from-purple-900/40 via-slate-900 to-cyan-900/40 border-b border-slate-800 py-3 px-4 text-center">
-        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
-            <span class="text-purple-300 font-medium">📢 ¿Eres marca o proveedor? Destaca tus productos aquí.</span>
-            <button @click="adModal = true" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md text-xs font-semibold transition">
-                Contratar Espacio Publicitario
+    <!-- Banner de Patrocinadores y Publicidad para Marcas -->
+    <section class="bg-gradient-to-r from-purple-900/40 via-slate-900 to-cyan-900/40 border-b border-slate-800 py-2.5 px-4 text-center">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
+            <span class="text-purple-300 font-medium flex items-center gap-1.5">
+                📢 Espacio Publicitario: Promociona tu marca o proveedor aquí con pagos en USDT.
+            </span>
+            <button @click="adModal = true" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md font-semibold transition shadow">
+                Contratar Publicidad
             </button>
         </div>
     </section>
@@ -43,24 +48,33 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         <div class="text-center mb-10">
-            <h2 class="text-3xl font-extrabold mb-2">Catálogo Exclusivo</h2>
-            <p class="text-slate-400">Tecnología, moda y accesorios optimizados con Inteligencia Artificial.</p>
+            <h2 class="text-3xl font-extrabold mb-2">Catálogo Multilingüe Exclusivo</h2>
+            <p class="text-slate-400 text-sm sm:text-base">Moda, accesorios y tecnología optimizados autónomamente mediante Inteligencia Artificial.</p>
         </div>
 
-        <!-- Catálogo de Productos -->
+        <!-- Cuadro de Cupón Activo -->
+        <div class="max-w-md mx-auto mb-10 bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs sm:text-sm">
+            <span class="text-slate-300">🎟️ Cupón activo: <strong class="text-cyan-400">AETHERIA100</strong></span>
+            <button @click="applyCoupon()" class="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-lg border border-cyan-500/30 hover:bg-cyan-500/30 font-medium">Aplicar</button>
+        </div>
+
+        <!-- Grid de Productos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <template x-for="product in products" :key="product.id">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
                     <div>
-                        <div class="h-40 bg-slate-800 rounded-lg mb-4 flex items-center justify-center text-4xl">
+                        <div class="h-44 bg-slate-950 rounded-lg mb-4 flex items-center justify-center text-5xl border border-slate-800/60">
                             <span x-text="product.emoji"></span>
                         </div>
                         <h3 class="font-bold text-lg mb-1" x-text="product.name"></h3>
-                        <p class="text-slate-400 text-sm mb-3" x-text="product.desc"></p>
+                        <p class="text-slate-400 text-xs sm:text-sm mb-4" x-text="product.desc"></p>
                     </div>
-                    <div class="flex items-center justify-between mt-4">
-                        <span class="text-cyan-400 font-bold text-lg" x-text="'$' + product.price"></span>
-                        <button @click="addToCart(product)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-sm transition">
+                    <div class="flex items-center justify-between mt-2 pt-3 border-t border-slate-800/80">
+                        <div>
+                            <span class="text-cyan-400 font-bold text-lg" x-text="'$' + product.price + ' USD'"></span>
+                            <span class="text-[10px] block text-slate-500">Acepta USDT / USD</span>
+                        </div>
+                        <button @click="addToCart(product)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition">
                             Añadir
                         </button>
                     </div>
@@ -69,120 +83,123 @@
         </div>
     </main>
 
-    <!-- Botón Flotante de Asistente IA / Soporte -->
+    <!-- Botón Flotante del Bot Asistente IA -->
     <div class="fixed bottom-6 right-6 z-40">
-        <button @click="chatOpen = !chatOpen" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-4 rounded-full shadow-lg flex items-center justify-center text-xl transition">
+        <button @click="chatOpen = !chatOpen" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-105">
             💬
         </button>
     </div>
 
     <!-- Modal del Bot de Atención al Cliente (IA) -->
     <div x-show="chatOpen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full sm:max-w-md h-[500px] sm:rounded-2xl flex flex-col">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-                <h3 class="font-bold flex items-center gap-2">🤖 Asistente Aetheria (IA)</h3>
+        <div class="bg-slate-900 border border-slate-800 w-full sm:max-w-md h-[520px] sm:rounded-2xl flex flex-col shadow-2xl">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/40 sm:rounded-t-2xl">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <h3 class="font-bold text-sm">Asistente Virtual Aetheria (IA)</h3>
+                </div>
                 <button @click="chatOpen = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <div class="flex-1 p-4 overflow-y-auto space-y-3 text-sm">
-                <div class="bg-slate-800 p-3 rounded-xl max-w-[85%]">
-                    ¡Hola! Soy el bot inteligente de Aetheria Market. ¿En qué puedo ayudarte hoy sobre productos, envíos o pagos con USDT?
+            <div class="flex-1 p-4 overflow-y-auto space-y-3 text-xs sm:text-sm">
+                <div class="bg-slate-800/80 p-3 rounded-xl max-w-[85%] text-slate-200">
+                    ¡Hola! Soy el bot inteligente de Aetheria Market. Puedo guiarte con productos, métodos de pago en USDT o conectarte con soporte humano si lo requieres. ¿En qué te ayudo?
                 </div>
                 <template x-for="msg in chatMessages">
                     <div :class="msg.sender === 'user' ? 'ml-auto bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'" class="p-3 rounded-xl max-w-[85%]" x-text="msg.text"></div>
                 </template>
             </div>
-            <div class="p-3 border-t border-slate-800 flex gap-2">
-                <input type="text" x-model="chatInput" @keyup.enter="sendChatMessage()" placeholder="Escribe tu duda..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500">
-                <button @click="sendChatMessage()" class="bg-cyan-500 text-slate-950 px-4 py-2 rounded-lg font-semibold text-sm">Enviar</button>
+            <div class="p-3 border-t border-slate-800 bg-slate-950/40 flex gap-2">
+                <input type="text" x-model="chatInput" @keyup.enter="sendChatMessage()" placeholder="Escribe tu consulta..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-cyan-500">
+                <button @click="sendChatMessage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm transition">Enviar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de IA Ops & Admin (Optimización de pedidos y subida de productos) -->
+    <!-- Modal de IA Ops & Admin (Optimización de pedidos y subida autónoma de productos) -->
     <div x-show="aiPanel" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold">⚙️ Panel de Automatización IA</h3>
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold flex items-center gap-2">⚙️ Panel de Automatización por IA</h3>
                 <button @click="aiPanel = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <div class="space-y-4 text-sm text-slate-300">
+            <div class="space-y-4 text-xs sm:text-sm text-slate-300">
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <h4 class="font-bold text-cyan-400 mb-1">📦 Subida Autónoma de Productos</h4>
-                    <p class="text-xs text-slate-400 mb-3">La IA analiza tendencias de dropshipping y añade nuevos artículos automáticamente al catálogo.</p>
-                    <button @click="aiPublishProduct()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-lg transition">Generar y Publicar Producto con IA</button>
+                    <p class="text-slate-400 mb-3 text-xs">La IA extrae catálogos externos, adapta características y actualiza precios automáticamente bajo la marca Aetheria Market.</p>
+                    <button @click="aiPublishProduct()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg transition shadow">Extraer y Publicar Nuevo Producto</button>
                 </div>
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <h4 class="font-bold text-cyan-400 mb-1">⚡ Optimización de Pedidos y Logística</h4>
-                    <p class="text-xs text-slate-400 mb-3">Agrupa envíos y reduce costes de transacción automáticamente.</p>
-                    <button @click="aiOptimizeOrders()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 rounded-lg transition">Optimizar Cola de Pedidos Actual</button>
+                    <p class="text-slate-400 mb-3 text-xs">Procesa y agrupa pedidos masivos reduciendo tiempos de entrega y comisiones de pasarela.</p>
+                    <button @click="aiOptimizeOrders()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition border border-slate-700">Optimizar Cola de Pedidos Activa</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Proveedores (Buzón) -->
+    <!-- Modal del Buzón de Proveedores -->
     <div x-show="supplierModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold">🤝 Buzón para Nuevos Proveedores</h3>
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold">🤝 Buzón para Nuevos Proveedores</h3>
                 <button @click="supplierModal = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400">¿Quieres que vendamos tus productos en Aetheria Market? Déjanos tus datos y detalles del producto.</p>
+            <p class="text-xs text-slate-400">¿Eres fabricante o proveedor y quieres que comercialicemos tus productos? Envíanos tu propuesta.</p>
             <div class="space-y-3">
-                <input type="text" placeholder="Nombre de la marca o empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm">
-                <input type="text" placeholder="Contacto (Telegram / WhatsApp / Email)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm">
-                <textarea placeholder="Descripción del producto que ofreces..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm h-24"></textarea>
-                <button @click="alert('¡Propuesta enviada con éxito! Nos comunicaremos pronto.'); supplierModal = false;" class="w-full bg-cyan-500 text-slate-950 font-bold py-2 rounded-lg">Enviar Propuesta</button>
+                <input type="text" placeholder="Nombre de la marca o empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-cyan-500 focus:outline-none">
+                <input type="text" placeholder="Contacto (Telegram @usuario / WhatsApp)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-cyan-500 focus:outline-none">
+                <textarea placeholder="Detalles de los productos que ofreces..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm h-24 focus:border-cyan-500 focus:outline-none"></textarea>
+                <button @click="alert('¡Propuesta enviada con éxito al equipo de compras!'); supplierModal = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Enviar Propuesta de Proveedor</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Publicidad / Patrocinadores -->
+    <!-- Modal de Publicidad y Patrocinios -->
     <div x-show="adModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold">📢 Patrocinios y Publicidad</h3>
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold">📢 Contratar Espacio Publicitario</h3>
                 <button @click="adModal = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400">Promociona tu marca o producto directamente en nuestra página principal. Pagos aceptados en USDT.</p>
+            <p class="text-xs text-slate-400">Destaca tu marca ante miles de compradores en nuestra plataforma. Pagos flexibles aceptados en USDT.</p>
             <div class="space-y-3">
-                <input type="text" placeholder="Nombre de la marca" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm">
-                <input type="text" placeholder="Enlace de tu sitio web o producto" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm">
-                <select class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-slate-300">
-                    <option>Banner Principal (7 días) - $50 USDT</option>
-                    <option>Destacado en Catálogo (30 días) - $120 USDT</option>
+                <input type="text" placeholder="Nombre de tu marca o empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-purple-500 focus:outline-none">
+                <input type="text" placeholder="Enlace web o red social de destino" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-purple-500 focus:outline-none">
+                <select class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-slate-300 focus:border-purple-500 focus:outline-none">
+                    <option>Banner Principal Superior (7 días) - $50 USDT</option>
+                    <option>Destacado en Catálogo General (30 días) - $120 USDT</option>
                 </select>
-                <button @click="alert('Solicitud de publicidad registrada. Te contactaremos para procesar el pago en USDT.'); adModal = false;" class="w-full bg-purple-600 text-white font-bold py-2 rounded-lg">Solicitar Espacio</button>
+                <button @click="alert('Solicitud de patrocinio registrada. Te contactaremos para coordinar el pago en USDT.'); adModal = false;" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg transition">Proceder al Pago en USDT</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer / Canales de Atención al Cliente Directos -->
-    <footer class="border-t border-slate-800 bg-slate-900/50 mt-16 py-8 px-4">
+    <!-- Footer / Canales de Contacto Directo -->
+    <footer class="border-t border-slate-800 bg-slate-900/40 mt-16 py-10 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
                 <p class="font-bold text-lg mb-1">Aetheria Market</p>
-                <p class="text-xs text-slate-400">Plataforma de comercio electrónico de próxima generación.</p>
+                <p class="text-xs text-slate-400">Ecosistema de comercio global descentralizado y optimizado por IA.</p>
             </div>
-            <!-- Canales solicitados: WhatsApp, Telegram, Discord y Buzón de Proveedores -->
-            <div class="flex flex-wrap gap-4 text-sm items-center">
-                <a href="https://wa.me/tu_numero" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg flex items-center gap-2 transition">
+            <!-- Canales de Atención al Cliente (WhatsApp, Telegram @Ristcruz, Discord, Proveedores) -->
+            <div class="flex flex-wrap gap-3 text-xs sm:text-sm items-center justify-center">
+                <a href="https://wa.me/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
                     🟢 WhatsApp Soporte
                 </a>
-                <a href="https://t.me/Ristcruz" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg flex items-center gap-2 transition">
+                <a href="https://t.me/Ristcruz" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
                     ✈️ Telegram (@Ristcruz)
                 </a>
-                <a href="https://discord.gg/tu_servidor" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3 py-2 rounded-lg flex items-center gap-2 transition">
+                <a href="https://discord.gg/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
                     🎮 Discord Comunitario
                 </a>
-                <button @click="supplierModal = true" class="text-cyan-400 hover:underline font-medium text-xs">
+                <button @click="supplierModal = true" class="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 px-3.5 py-2 rounded-lg font-medium transition">
                     📦 Buzón de Proveedores
                 </button>
             </div>
         </div>
     </footer>
 
-    <!-- Script de Funcionalidad Alpine.js -->
+    <!-- Script de Lógica y Datos -->
     <script>
         function storeData() {
             return {
@@ -195,13 +212,16 @@
                 chatInput: '',
                 chatMessages: [],
                 products: [
-                    { id: 1, name: 'Gafas Smart AR', desc: 'Realidad aumentada con IA integrada', price: '149.99', emoji: '🕶️' },
-                    { id: 2, name: 'Reloj Crono X', desc: 'Sincronización multi-cadena y biométrica', price: '89.50', emoji: '⌚' },
-                    { id: 3, name: 'Auriculares Aether Pods', desc: 'Cancelación activa de ruido neural', price: '59.99', emoji: '🎧' }
+                    { id: 1, name: 'Gafas Smart AR Urban', desc: 'Realidad aumentada y diseño ergonómico exclusivo.', price: '149.99', emoji: '🕶️' },
+                    { id: 2, name: 'Chaqueta Cyber Techwear', desc: 'Impermeable, múltiples bolsillos y estilo futurista.', price: '89.50', emoji: '🧥' },
+                    { id: 3, name: 'Reloj Crono Aetheria', desc: 'Sincronización multi-cadena y biométrica avanzada.', price: '59.99', emoji: '⌚' }
                 ],
                 addToCart(product) {
                     this.cart.push(product);
-                    alert('¡Producto añadido al carrito!');
+                    alert('¡Producto añadido al carrito con éxito!');
+                },
+                applyCoupon() {
+                    alert('¡Cupón AETHERIA100 aplicado correctamente! 10% de descuento reflejado.');
                 },
                 sendChatMessage() {
                     if(!this.chatInput.trim()) return;
@@ -209,25 +229,27 @@
                     let userMsg = this.chatInput;
                     this.chatInput = '';
                     setTimeout(() => {
-                        let reply = "Entiendo tu consulta. Para pagos en USDT o envíos, nuestro equipo de soporte te atiende con gusto por WhatsApp o Telegram.";
+                        let reply = "Entendido. Recuerda que puedes contactarnos directamente por Telegram (@Ristcruz) o WhatsApp para seguimiento personalizado.";
                         if(userMsg.toLowerCase().includes('pago') || userMsg.toLowerCase().includes('usdt')) {
-                            reply = "Aceptamos pagos directos en USDT de manera segura y automática.";
+                            reply = "Aceptamos pagos seguros en USD y criptomonedas USDT de forma automatizada.";
+                        } else if(userMsg.toLowerCase().includes('envio') || userMsg.toLowerCase().includes('envío')) {
+                            reply = "Nuestros envíos son gestionados de forma inteligente para garantizar la entrega puntual.";
                         }
                         this.chatMessages.push({ sender: 'bot', text: reply });
                     }, 800);
                 },
                 aiPublishProduct() {
-                    let newProds = [
-                        { id: 4, name: 'Lámpara Levitante Neo', desc: 'Iluminación ambiental con control magnético', price: '45.00', emoji: '💡' },
-                        { id: 5, name: 'Teclado Mecánico Cyberpunk', desc: 'Switches ópticos y retroiluminación RGB inteligente', price: '110.00', emoji: '⌨️' }
+                    let externalItems = [
+                        { id: 4, name: 'Sudadera Oversize Minimal', desc: 'Diseño textil importado optimizado por IA.', price: '45.00', emoji: '👕' },
+                        { id: 5, name: 'Mochila Antirrobo LED', desc: 'Puerto USB integrado y paneles inteligentes.', price: '75.00', emoji: '🎒' }
                     ];
-                    let chosen = newProds[Math.floor(Math.random() * newProds.length)];
-                    this.products.push(chosen);
-                    alert('¡La IA ha analizado tendencias y subido un nuevo producto con éxito: ' + chosen.name + '!');
+                    let randomItem = externalItems[Math.floor(Math.random() * externalItems.length)];
+                    this.products.push(randomItem);
+                    alert('¡La IA ha importado y adaptado un nuevo producto con éxito al catálogo: ' + randomItem.name + '!');
                     this.aiPanel = false;
                 },
                 aiOptimizeOrders() {
-                    alert('¡Optimización de pedidos completada! Rutas logísticas agrupadas y costos reducidos con éxito.');
+                    alert('¡Optimización de pedidos completada! Rutas de despacho agrupadas y procesadas.');
                     this.aiPanel = false;
                 }
             }
