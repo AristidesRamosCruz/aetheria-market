@@ -84,6 +84,7 @@
         .product-price { font-size: 1.15rem; font-weight: 800; color: var(--shein-red); }
 
         .badge-discount { position: absolute; top: 10px; right: 10px; background: var(--shein-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .badge-vip { position: absolute; top: 10px; left: 10px; background: #7B2CBF; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 
         /* Estilos Detalle Producto tipo SHEIN */
         .shein-detail-box { display: flex; flex-direction: column; gap: 15px; }
@@ -145,6 +146,7 @@
                 <li><a href="#" onclick="filterCat('all')" id="n-all">Todos</a></li>
                 <li><a href="#" onclick="filterCat('belleza')" id="n-beauty">Belleza & Cosmética</a></li>
                 <li><a href="#" onclick="filterCat('ropa')" id="n-clothes">Ropa</a></li>
+                <li><a href="#" onclick="filterCat('ropa_interior')" id="n-lingerie">Ropa Interior</a></li>
                 <li><a href="#" onclick="filterCat('perfumes')" id="n-perfumes">Perfumes</a></li>
                 <li><a href="#" onclick="filterCat('zapatos')" id="n-shoes">Zapatos</a></li>
                 <li><a href="#" onclick="filterCat('relojes')" id="n-watches">Relojes</a></li>
@@ -159,8 +161,8 @@
         <div>
             <label for="sortPrice" id="lblSort">Ordenar por:</label>
             <select id="sortPrice" class="search-select" onchange="sortProducts()">
-                <option value="asc" id="optAsc">Precio: Menor a Mayor</option>
-                <option value="desc" id="optDesc">Precio: Mayor a Menor (Exclusivo)</option>
+                <option value="asc" id="optAsc">Precio: Más Baratos (0.50 - 1.00 USDT Primero)</option>
+                <option value="desc" id="optDesc">Precio: Mayor a Menor (Exclusivos & VIP)</option>
             </select>
         </div>
         <button class="btn" onclick="openModal('modalQRVerification')" id="btnVerify">🛡️ Verificar Usuario Real (QR)</button>
@@ -285,8 +287,8 @@
                 supDisc: "✨ ¡Descuento automático del 1.5% si tu contrato supera los 5 días!", feedTitle: "Buzón de Quejas y Sugerencias",
                 sendFeed: "Enviar Opinión", qrTitle: "Verificación Anti-Bot", qrDesc: "Escanea este código QR dinámico para validar que eres un usuario humano real.",
                 verified: "Usuario Validado", legalTitle: "Marco Jurídico y Derechos de Autor", sortLbl: "Ordenar por:",
-                sortAsc: "Precio: Menor a Mayor", sortDesc: "Precio: Mayor a Menor (Exclusivo)",
-                nAll: "Todos", nBeauty: "Belleza & Cosmética", nClothes: "Ropa", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
+                sortAsc: "Precio: Más Baratos (0.50 - 1.00 USDT Primero)", sortDesc: "Precio: Mayor a Menor (Exclusivos & VIP)",
+                nAll: "Todos", nBeauty: "Belleza & Cosmética", nClothes: "Ropa", nLingerie: "Ropa Interior", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
                 botTitle: "Asistente Aetheria IA & Registro"
             },
             en: {
@@ -299,8 +301,8 @@
                 supDisc: "✨ Automatic 1.5% discount for contracts over 5 days!", feedTitle: "Complaints & Feedback Box",
                 sendFeed: "Submit Feedback", qrTitle: "Anti-Bot Verification", qrDesc: "Scan this dynamic QR code to verify you are a real human.",
                 verified: "User Verified", legalTitle: "Legal Framework & Copyright", sortLbl: "Sort by:",
-                sortAsc: "Price: Low to High", sortDesc: "Price: High to Low (Exclusive)",
-                nAll: "All", nBeauty: "Beauty & Cosmetics", nClothes: "Clothing", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
+                sortAsc: "Price: Lowest First (0.50 - 1.00 USDT)", sortDesc: "Price: High to Low (Exclusive & VIP)",
+                nAll: "All", nBeauty: "Beauty & Cosmetics", nClothes: "Clothing", nLingerie: "Lingerie", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
                 botTitle: "Aetheria AI Assistant & Onboarding"
             }
         };
@@ -309,22 +311,28 @@
         let cart = [];
         let products = [];
         let currentSelectedSize = 'M';
-        let currentSelectedColor = '#8B0000';
 
-        const categories = ['belleza', 'ropa', 'perfumes', 'zapatos', 'relojes'];
+        const categories = ['belleza', 'ropa', 'ropa_interior', 'perfumes', 'zapatos', 'relojes'];
+        const categoryLabels = {
+            'belleza': 'Belleza',
+            'ropa': 'Ropa',
+            'ropa_interior': 'Ropa Interior',
+            'perfumes': 'Perfumes',
+            'zapatos': 'Zapatos',
+            'relojes': 'Relojes'
+        };
         const brands = ['Aetheria Luxe', 'Elegance Paris', 'UrbanVibe', 'VelvetTouch', 'Aura Glow'];
         const colorsList = ['#8B0000', '#4B0082', '#000000', '#FFC0CB', '#808080', '#FFFFFF'];
-        const colorNames = ['Vino', 'Púrpura', 'Negro', 'Rosa', 'Gris', 'Blanco'];
         const sizesList = ['0(XXS)', '2(XS)', '4(S)', '6(M)', '8/10(L)', '12(XL)', '14(XXL)'];
 
-        // Generador SVG confiable para evitar fallos de red
         function getSVGImage(colorHex, categoryName, modelNum) {
             const encodedColor = encodeURIComponent(colorHex);
+            const label = (categoryLabels[categoryName] || categoryName).toUpperCase();
             const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
                 <rect width="300" height="300" fill="%23F1F5F9"/>
                 <circle cx="150" cy="130" r="80" fill="${encodedColor}" opacity="0.85"/>
                 <path d="M110 120 L190 120 L170 200 L130 200 Z" fill="%23FFFFFF" opacity="0.3"/>
-                <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23334155" font-family="sans-serif" font-weight="bold" font-size="14">${categoryName.toUpperCase()} MOD-${modelNum}</text>
+                <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23334155" font-family="sans-serif" font-weight="bold" font-size="14">${label} MOD-${modelNum}</text>
             </svg>`;
             return `data:image/svg+xml;utf8,${svgStr}`;
         }
@@ -332,27 +340,44 @@
         function generate300Products() {
             let list = [];
             let id = 1;
+            
             for (let c of categories) {
-                for (let i = 1; i <= 60; i++) {
-                    let basePrice = Math.floor(Math.random() * 220) + 10;
-                    let originalPrice = Math.floor(basePrice * 1.35);
-                    let titleEs = `${c.charAt(0).toUpperCase() + c.slice(1)} ${brands[i % 5]} Conjunto Elegante Mod-${i}`;
+                for (let i = 1; i <= 50; i++) {
+                    let basePrice;
+                    let isVip = false;
+                    
+                    // Distribución de precios: ultra baratos (0.50 - 1.00 USDT), estándar (<50 USDT) y VIP (>50 USDT)
+                    if (i <= 10) {
+                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2));
+                    } else if (i <= 45) {
+                        basePrice = parseFloat((Math.random() * (48 - 1.5) + 1.5).toFixed(2));
+                    } else {
+                        basePrice = parseFloat((Math.random() * (150 - 55) + 55).toFixed(2));
+                        isVip = true;
+                    }
+
+                    let originalPrice = parseFloat((basePrice * 1.35).toFixed(2));
+                    let catLabel = categoryLabels[c];
+                    let titleEs = `${catLabel} ${brands[i % 5]} ${isVip ? 'Colección VIP' : 'Moda Unisex'} Mod-${i}`;
                     let chosenColor = colorsList[i % colorsList.length];
+
                     list.push({
                         id: id++,
                         category: c,
                         title: titleEs,
                         price: basePrice,
                         originalPrice: originalPrice,
-                        review: `Reseña: Calidad premium comprobada ⭐ 4.87 (1000+). Tela versátil y adaptable.`,
+                        review: `Reseña: Calidad premium comprobada ⭐ 4.89 (1000+). Tallas ajustables y textil suave.`,
                         img: getSVGImage(chosenColor, c, i),
                         colorHex: chosenColor,
                         model: `V-${100+i}`,
-                        discount: Math.floor(((originalPrice - basePrice) / originalPrice) * 100)
+                        discount: Math.floor(((originalPrice - basePrice) / originalPrice) * 100),
+                        isVip: isVip
                     });
                 }
             }
-            return list;
+            // Ordenar por defecto de menor a mayor precio (desglose desde los más baratos)
+            return list.sort((a, b) => a.price - b.price);
         }
 
         products = generate300Products();
@@ -365,6 +390,7 @@
                 card.className = 'product-card';
                 card.onclick = () => openProductDetail(p.id);
                 card.innerHTML = `
+                    ${p.isVip ? '<div class="badge-vip">VIP / Alta Gama</div>' : ''}
                     <div class="badge-discount">-${p.discount}%</div>
                     <div class="img-container">
                         <img src="${p.img}" class="product-img" alt="${p.title}">
@@ -375,8 +401,8 @@
                         <div class="product-review">${p.review}</div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
                             <div>
-                                <span class="product-price">${p.price} USDT</span>
-                                <span style="font-size:0.75rem; text-decoration:line-through; color:var(--text-muted); margin-left:4px;">${p.originalPrice} USDT</span>
+                                <span class="product-price">${p.price.toFixed(2)} USDT</span>
+                                <span style="font-size:0.75rem; text-decoration:line-through; color:var(--text-muted); margin-left:4px;">${p.originalPrice.toFixed(2)} USDT</span>
                             </div>
                             <button class="btn btn-primary" onclick="event.stopPropagation(); addToCartDirect(${p.id})">+ Agregar</button>
                         </div>
@@ -390,7 +416,7 @@
             const p = products.find(prod => prod.id === id);
             const container = document.getElementById('sheinDetailContent');
             
-            let colorThumbsHTML = colorsList.map((c, idx) => `
+            let colorThumbsHTML = colorsList.map(c => `
                 <div class="color-thumb ${c === p.colorHex ? 'active' : ''}" style="background:${c};" onclick="selectColor(this)"></div>
             `).join('');
 
@@ -406,13 +432,13 @@
                     </div>
                 </div>
                 <div>
-                    <h2 style="font-size:1.2rem; margin-bottom:10px;">${p.title}</h2>
+                    <h2 style="font-size:1.2rem; margin-bottom:10px;">${p.title} ${p.isVip ? '👑' : ''}</h2>
                     <div class="shein-price-banner">
                         <div>
-                            <span style="font-size:1.4rem; font-weight:bold;">${p.price} USDT</span>
-                            <span style="text-decoration:line-through; opacity:0.8; font-size:0.9rem; margin-left:6px;">${p.originalPrice} USDT</span>
+                            <span style="font-size:1.4rem; font-weight:bold;">${p.price.toFixed(2)} USDT</span>
+                            <span style="text-decoration:line-through; opacity:0.8; font-size:0.9rem; margin-left:6px;">${p.originalPrice.toFixed(2)} USDT</span>
                         </div>
-                        <span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:4px; font-size:0.8rem;">Ahorra ${p.originalPrice - p.price} USDT</span>
+                        <span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:4px; font-size:0.8rem;">Ahorra ${(p.originalPrice - p.price).toFixed(2)} USDT</span>
                     </div>
 
                     <div style="margin-top:15px;">
@@ -497,7 +523,7 @@
                 div.innerHTML = `
                     <div>
                         <div style="font-weight:bold; font-size:0.85rem;">${item.title}</div>
-                        <div style="font-size:0.75rem; color:var(--text-muted);">Talla: ${item.selectedSize || 'M'} | ${item.price} USDT</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Talla: ${item.selectedSize || 'M'} | ${item.price.toFixed(2)} USDT</div>
                     </div>
                     <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="removeFromCart(${index})">✕</button>
                 `;
@@ -567,6 +593,7 @@
             document.getElementById('n-all').innerText = t.nAll;
             document.getElementById('n-beauty').innerText = t.nBeauty;
             document.getElementById('n-clothes').innerText = t.nClothes;
+            document.getElementById('n-lingerie').innerText = t.nLingerie;
             document.getElementById('n-perfumes').innerText = t.nPerfumes;
             document.getElementById('n-shoes').innerText = t.nShoes;
             document.getElementById('n-watches').innerText = t.nWatches;
@@ -587,7 +614,7 @@
         function initBotOnboarding() {
             appendBotMsg("¡Hola! 👋 Bienvenido a Aetheria Market. Soy tu asistente de inscripción e IA de compras.");
             setTimeout(() => {
-                appendBotMsg("📌 **Compra Rápida**: Envíos prioritarios a todo el país. 🚚\n📌 **Cupones**: Tienes un 2% de descuento automático en tu carrito.\n📌 **Fechas Especiales**: ¡Descuento extra del 3.4% en compras mayores a 100 USDT de 3+ artículos!");
+                appendBotMsg("📌 **Compra Rápida**: Envíos prioritarios express. 🚚\n📌 **Cupones**: Tienes un 2% de descuento automático en tu carrito.\n📌 **Ofertas Especiales**: Precios desde 0.50 USDT y 3.4% de rebaja en compras >100 USDT de 3+ artículos.");
             }, 800);
         }
 
@@ -668,7 +695,7 @@
             closeModal('modalFeedback');
         }
 
-        // Inicializar catálogo
+        // Inicializar catálogo ordenado de menor a mayor precio
         renderProducts(products);
     </script>
 </body>
