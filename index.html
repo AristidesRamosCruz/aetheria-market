@@ -34,15 +34,21 @@
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
         
         .brand-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(123,44,191,0.2);
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 12px rgba(123,44,191,0.25);
             cursor: pointer;
+            animation: glowTitle 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowTitle {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.25); }
         }
 
         .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -50,7 +56,7 @@
         .btn-primary { background: var(--primary-gradient); color: #FFF; border: none; }
         .btn-shein { background: #000; color: #FFF; border: none; border-radius: 4px; padding: 12px 24px; font-weight: bold; width: 100%; text-transform: uppercase; cursor: pointer; }
 
-        nav { background: rgba(0,0,0,0.03); border-top: 1px symbol(var(--border-color)); border-top: 1px solid var(--border-color); }
+        nav { background: rgba(0,0,0,0.03); border-top: 1px solid var(--border-color); }
         .nav-links { display: flex; justify-content: center; list-style: none; gap: 15px; padding: 12px; flex-wrap: wrap; }
         .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
 
@@ -71,8 +77,8 @@
             transform: translate(-50%, -50%) rotate(-30deg);
             font-size: 1rem;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.7);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            color: rgba(255, 255, 255, 0.75);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
             white-space: nowrap;
             pointer-events: none;
             text-transform: uppercase;
@@ -82,7 +88,7 @@
 
         .product-details { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .product-title { font-weight: 600; margin-bottom: 5px; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-review { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-bottom: 8px; }
+        .product-review { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .product-price { font-size: 1.15rem; font-weight: 800; color: var(--shein-red); }
 
         .badge-discount { position: absolute; top: 10px; right: 10px; background: var(--shein-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; z-index: 6; }
@@ -126,6 +132,7 @@
         .wallet-address { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; word-break: break-all; margin: 10px 0; border: 1px solid var(--border-color); }
         .qr-placeholder { display: flex; justify-content: center; margin: 15px 0; }
         .legal-text { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; text-align: justify; }
+        .review-list-item { background: rgba(0,0,0,0.02); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 0.8rem; border-left: 3px solid var(--accent-color); }
     </style>
 </head>
 <body>
@@ -325,7 +332,26 @@
         const colorsList = ['#8B0000', '#4B0082', '#000000', '#FFC0CB', '#808080', '#FFFFFF'];
         const sizesList = ['0(XXS)', '2(XS)', '4(S)', '6(M)', '8/10(L)', '12(XL)', '14(XXL)'];
 
-        // Función gráfica SVG optimizada con iconos realistas según el tipo de producto de belleza, ropa, perfumes, zapatos, relojes y cosmética
+        const reviewPool = [
+            { text: "Excelente calidad, superó mis expectativas por el precio.", type: "pos" },
+            { text: "Me gustó bastante, aunque el color varía ligeramente en persona.", type: "mixed" },
+            { text: "La tela es suave y cómoda, tardó un poco el envío pero valió la pena.", type: "pos" },
+            { text: "No es exactamente lo que esperaba en el grosor, pero cumple su función.", type: "neg" },
+            { text: "¡Impecable! Excelente presentación y llegó sellado perfectamente.", type: "pos" },
+            { text: "El tamaño vino un poco justo, recomiendo pedir una talla más.", type: "mixed" },
+            { text: "Diseño elegante y de muy buena categoría. Totalmente recomendado.", type: "pos" },
+            { text: "Buena relación calidad-precio, aunque el empaque venía algo doblado.", type: "mixed" },
+            { text: "¡Una maravilla! Lo volvería a comprar sin duda alguna.", type: "pos" },
+            { text: "Calidad estándar para el costo, nada extraordinario pero aceptable.", type: "mixed" }
+        ];
+
+        function getRandomReviews(seedId) {
+            let r1 = reviewPool[(seedId * 3) % reviewPool.length];
+            let r2 = reviewPool[(seedId * 7 + 1) % reviewPool.length];
+            if (r1.text === r2.text) r2 = reviewPool[(seedId + 2) % reviewPool.length];
+            return [r1, r2];
+        }
+
         function getSVGImage(categoryName, modelNum) {
             let graphicInner = '';
             let bgGradient = '%23E2E8F0';
@@ -391,23 +417,28 @@
             let id = 1;
             
             for (let c of categories) {
-                // Alrededor de 43-45 productos por categoría para totalizar más de 300 ítems variados
                 for (let i = 1; i <= 45; i++) {
                     let basePrice;
                     let isVip = false;
                     
-                    if (i <= 10) {
-                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2));
-                    } else if (i <= 40) {
-                        basePrice = parseFloat((Math.random() * (48 - 1.5) + 1.5).toFixed(2));
+                    // Asignación estricta de precios solicitados por el usuario
+                    if (c === 'ropa_interior' && i <= 15) {
+                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2)); // 0.50 a 1.00 USDT para ropa interior sencilla y medias
+                    } else if (i <= 8) {
+                        basePrice = parseFloat((Math.random() * (1.00 - 0.50) + 0.50).toFixed(2)); // Rango inicial económico general
+                    } else if (i <= 38) {
+                        basePrice = parseFloat((Math.random() * (25 - 4) + 4).toFixed(2)); // Ropa barata y demás artículos de 4 a 25 USDT
+                    } else if (i <= 43) {
+                        basePrice = parseFloat((Math.random() * (50 - 26) + 26).toFixed(2)); // Estándar hasta 50 USDT
                     } else {
-                        basePrice = parseFloat((Math.random() * (150 - 55) + 55).toFixed(2));
+                        basePrice = parseFloat((Math.random() * (160 - 55) + 55).toFixed(2)); // Alta gama y VIP
                         isVip = true;
                     }
 
                     let originalPrice = parseFloat((basePrice * 1.35).toFixed(2));
                     let catLabel = categoryLabels[c];
-                    let titleEs = `${catLabel} ${brands[i % 5]} ${isVip ? 'Colección VIP Exclusiva' : 'Modelo Unisex Versátil'} Mod-${i}`;
+                    let titleEs = `${catLabel} ${brands[i % 5]} ${isVip ? 'Colección VIP Exclusiva' : 'Modelo Versátil Unisex'} Mod-${i}`;
+                    let assignedReviews = getRandomReviews(id);
 
                     list.push({
                         id: id++,
@@ -415,7 +446,7 @@
                         title: titleEs,
                         price: basePrice,
                         originalPrice: originalPrice,
-                        review: `Reseña: Excelente calidad certificada ⭐ 4.9 (1200+ valoraciones). Acabado profesional.`,
+                        reviews: assignedReviews,
                         img: getSVGImage(c, i),
                         model: `V-${100+i}`,
                         discount: Math.floor(((originalPrice - basePrice) / originalPrice) * 100),
@@ -423,7 +454,6 @@
                     });
                 }
             }
-            // Ordenar por defecto de menor a mayor precio (mostrando primero de 0.50 a 1.00 USDT)
             return list.sort((a, b) => a.price - b.price);
         }
 
@@ -445,7 +475,7 @@
                     </div>
                     <div class="product-details">
                         <div class="product-title">${p.title}</div>
-                        <div class="product-review">${p.review}</div>
+                        <div class="product-review">"${p.reviews[0].text}"</div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
                             <div>
                                 <span class="product-price">${p.price.toFixed(2)} USDT</span>
@@ -469,6 +499,10 @@
 
             let sizeBtnsHTML = sizesList.map(s => `
                 <button class="size-btn ${s.includes('M') ? 'active' : ''}" onclick="selectSize(this, '${s}')">${s}</button>
+            `).join('');
+
+            let reviewsHTML = p.reviews.map(r => `
+                <div class="review-list-item">⭐ "${r.text}"</div>
             `).join('');
 
             container.innerHTML = `
@@ -501,7 +535,10 @@
                         <div class="size-selector">${sizeBtnsHTML}</div>
                     </div>
 
-                    <p style="font-size:0.8rem; color:var(--text-muted); margin:15px 0;">${p.review}</p>
+                    <div style="margin:12px 0;">
+                        <label style="font-size:0.85rem; font-weight:bold; display:block; margin-bottom:5px;">Reseñas de Clientes Verificados:</label>
+                        ${reviewsHTML}
+                    </div>
 
                     <button class="btn-shein" onclick="addToCartFromDetail(${p.id})">🛒 Añadir a la Bolsa</button>
                 </div>
@@ -743,7 +780,7 @@
             closeModal('modalFeedback');
         }
 
-        // Inicializar catálogo ordenado de menor a mayor precio
+        // Inicializar catálogo con todas las especificaciones solicitadas
         renderProducts(products);
     </script>
 </body>
