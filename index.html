@@ -1,15 +1,20 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aetheria Market - Ecosistema de Comercio Inteligente</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased" x-data="storeData()">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen" x-data="storeData()">
 
     <!-- Header / Navbar Principal -->
     <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-800">
@@ -18,7 +23,7 @@
                 <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
                     Aetheria Market
                 </h1>
-                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full hidden sm:inline-block">Ropa y Accesorios</span>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full hidden sm:inline-block border border-slate-700">Ropa, Accesorios & Tech</span>
             </div>
             <div class="flex items-center gap-3">
                 <!-- Botón de Panel IA & Ops -->
@@ -26,7 +31,7 @@
                     🤖 IA Ops & Admin
                 </button>
                 <!-- Botón del Carrito -->
-                <button @click="cartOpen = true" class="relative bg-slate-800 p-2.5 rounded-lg hover:bg-slate-700 transition">
+                <button @click="cartOpen = true" class="relative bg-slate-800 p-2.5 rounded-lg hover:bg-slate-700 transition border border-slate-700">
                     🛒 <span class="absolute -top-1 -right-1 bg-cyan-500 text-slate-950 text-xs font-bold px-1.5 rounded-full" x-text="cart.length"></span>
                 </button>
             </div>
@@ -37,7 +42,7 @@
     <section class="bg-gradient-to-r from-purple-900/40 via-slate-900 to-cyan-900/40 border-b border-slate-800 py-2.5 px-4 text-center">
         <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
             <span class="text-purple-300 font-medium flex items-center gap-1.5">
-                📢 Espacio Publicitario: Promociona tu marca o proveedor aquí con pagos en USDT.
+                📢 ¿Eres marca o proveedor? Promociona tu producto aquí. Pagos aceptados en USDT.
             </span>
             <button @click="adModal = true" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md font-semibold transition shadow">
                 Contratar Publicidad
@@ -45,17 +50,17 @@
         </div>
     </section>
 
-    <!-- Main Content -->
+    <!-- Contenido Principal -->
     <main class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-extrabold mb-2">Catálogo Multilingüe Exclusivo</h2>
-            <p class="text-slate-400 text-sm sm:text-base">Moda, accesorios y tecnología optimizados autónomamente mediante Inteligencia Artificial.</p>
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-extrabold mb-2 text-white">Catálogo Multilingüe Exclusivo</h2>
+            <p class="text-slate-400 text-sm sm:text-base">Moda, accesorios y artículos optimizados autónomamente mediante IA.</p>
         </div>
 
         <!-- Cuadro de Cupón Activo -->
-        <div class="max-w-md mx-auto mb-10 bg-slate-900 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs sm:text-sm">
-            <span class="text-slate-300">🎟️ Cupón activo: <strong class="text-cyan-400">AETHERIA100</strong></span>
-            <button @click="applyCoupon()" class="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-lg border border-cyan-500/30 hover:bg-cyan-500/30 font-medium">Aplicar</button>
+        <div class="max-w-md mx-auto mb-10 bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between text-xs sm:text-sm shadow-inner">
+            <span class="text-slate-300">🎟️ Cupón de Descuento: <strong class="text-cyan-400">AETHERIA100</strong></span>
+            <button @click="applyCoupon()" class="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-lg border border-cyan-500/30 hover:bg-cyan-500/30 font-medium transition">Aplicar</button>
         </div>
 
         <!-- Grid de Productos -->
@@ -66,13 +71,13 @@
                         <div class="h-44 bg-slate-950 rounded-lg mb-4 flex items-center justify-center text-5xl border border-slate-800/60">
                             <span x-text="product.emoji"></span>
                         </div>
-                        <h3 class="font-bold text-lg mb-1" x-text="product.name"></h3>
+                        <h3 class="font-bold text-lg mb-1 text-slate-100" x-text="product.name"></h3>
                         <p class="text-slate-400 text-xs sm:text-sm mb-4" x-text="product.desc"></p>
                     </div>
                     <div class="flex items-center justify-between mt-2 pt-3 border-t border-slate-800/80">
                         <div>
                             <span class="text-cyan-400 font-bold text-lg" x-text="'$' + product.price + ' USD'"></span>
-                            <span class="text-[10px] block text-slate-500">Acepta USDT / USD</span>
+                            <span class="text-[10px] block text-slate-500">Acepta USD / USDT</span>
                         </div>
                         <button @click="addToCart(product)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition">
                             Añadir
@@ -82,6 +87,32 @@
             </template>
         </div>
     </main>
+
+    <!-- Modal del Carrito de Compras -->
+    <div x-show="cartOpen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-white">🛒 Mi Carrito</h3>
+                <button @click="cartOpen = false" class="text-slate-400 hover:text-white">✕</button>
+            </div>
+            <div class="max-h-60 overflow-y-auto space-y-2">
+                <template x-if="cart.length === 0">
+                    <p class="text-sm text-slate-500 text-center py-4">El carrito está vacío.</p>
+                </template>
+                <template x-for="(item, index) in cart" :key="index">
+                    <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-sm">
+                        <span x-text="item.name"></span>
+                        <span class="text-cyan-400 font-bold" x-text="'$' + item.price"></span>
+                    </div>
+                </template>
+            </div>
+            <div class="border-t border-slate-800 pt-3 flex justify-between items-center">
+                <span class="font-bold text-sm">Total a Pagar:</span>
+                <span class="text-cyan-400 font-bold text-lg" x-text="'$' + getTotal() + ' USD / USDT'"></span>
+            </div>
+            <button @click="alert('Redirigiendo a pasarela de pago segura en USD / USDT...'); cartOpen = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Proceder al Pago</button>
+        </div>
+    </div>
 
     <!-- Botón Flotante del Bot Asistente IA -->
     <div class="fixed bottom-6 right-6 z-40">
@@ -96,42 +127,42 @@
             <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/40 sm:rounded-t-2xl">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <h3 class="font-bold text-sm">Asistente Virtual Aetheria (IA)</h3>
+                    <h3 class="font-bold text-sm text-white">Asistente Virtual Aetheria (IA)</h3>
                 </div>
                 <button @click="chatOpen = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <div class="flex-1 p-4 overflow-y-auto space-y-3 text-xs sm:text-sm">
                 <div class="bg-slate-800/80 p-3 rounded-xl max-w-[85%] text-slate-200">
-                    ¡Hola! Soy el bot inteligente de Aetheria Market. Puedo guiarte con productos, métodos de pago en USDT o conectarte con soporte humano si lo requieres. ¿En qué te ayudo?
+                    ¡Hola! Soy el bot inteligente de Aetheria Market. Puedo responder tus dudas sobre envíos, pagos en USDT o conectar con atención al cliente. ¿En qué puedo ayudarte?
                 </div>
                 <template x-for="msg in chatMessages">
                     <div :class="msg.sender === 'user' ? 'ml-auto bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'" class="p-3 rounded-xl max-w-[85%]" x-text="msg.text"></div>
                 </template>
             </div>
             <div class="p-3 border-t border-slate-800 bg-slate-950/40 flex gap-2">
-                <input type="text" x-model="chatInput" @keyup.enter="sendChatMessage()" placeholder="Escribe tu consulta..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-cyan-500">
+                <input type="text" x-model="chatInput" @keyup.enter="sendChatMessage()" placeholder="Escribe tu duda aquí..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-cyan-500">
                 <button @click="sendChatMessage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm transition">Enviar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal de IA Ops & Admin (Optimización de pedidos y subida autónoma de productos) -->
+    <!-- Modal de IA Ops & Admin (Optimización de pedidos y subida de productos) -->
     <div x-show="aiPanel" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-bold flex items-center gap-2">⚙️ Panel de Automatización por IA</h3>
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">⚙️ Panel de Automatización IA</h3>
                 <button @click="aiPanel = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
             <div class="space-y-4 text-xs sm:text-sm text-slate-300">
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <h4 class="font-bold text-cyan-400 mb-1">📦 Subida Autónoma de Productos</h4>
-                    <p class="text-slate-400 mb-3 text-xs">La IA extrae catálogos externos, adapta características y actualiza precios automáticamente bajo la marca Aetheria Market.</p>
-                    <button @click="aiPublishProduct()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg transition shadow">Extraer y Publicar Nuevo Producto</button>
+                    <p class="text-slate-400 mb-3 text-xs">La IA analiza catálogos externos, reescribe características y sube artículos automáticamente bajo la marca de la tienda.</p>
+                    <button @click="aiPublishProduct()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg transition shadow">Importar y Publicar Producto con IA</button>
                 </div>
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
                     <h4 class="font-bold text-cyan-400 mb-1">⚡ Optimización de Pedidos y Logística</h4>
-                    <p class="text-slate-400 mb-3 text-xs">Procesa y agrupa pedidos masivos reduciendo tiempos de entrega y comisiones de pasarela.</p>
-                    <button @click="aiOptimizeOrders()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition border border-slate-700">Optimizar Cola de Pedidos Activa</button>
+                    <p class="text-slate-400 mb-3 text-xs">Agrupa despachos y optimiza los flujos de comisión para envíos más rápidos.</p>
+                    <button @click="aiOptimizeOrders()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition border border-slate-700">Optimizar Pedidos Activos</button>
                 </div>
             </div>
         </div>
@@ -141,15 +172,15 @@
     <div x-show="supplierModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-base font-bold">🤝 Buzón para Nuevos Proveedores</h3>
+                <h3 class="text-base font-bold text-white">🤝 Buzón para Nuevos Proveedores</h3>
                 <button @click="supplierModal = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400">¿Eres fabricante o proveedor y quieres que comercialicemos tus productos? Envíanos tu propuesta.</p>
+            <p class="text-xs text-slate-400">¿Tienes un producto que quieras comercializar en Aetheria Market? Déjanos tus datos.</p>
             <div class="space-y-3">
-                <input type="text" placeholder="Nombre de la marca o empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-cyan-500 focus:outline-none">
-                <input type="text" placeholder="Contacto (Telegram @usuario / WhatsApp)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-cyan-500 focus:outline-none">
-                <textarea placeholder="Detalles de los productos que ofreces..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm h-24 focus:border-cyan-500 focus:outline-none"></textarea>
-                <button @click="alert('¡Propuesta enviada con éxito al equipo de compras!'); supplierModal = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Enviar Propuesta de Proveedor</button>
+                <input type="text" placeholder="Nombre de la marca / empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-cyan-500 focus:outline-none">
+                <input type="text" placeholder="Contacto (Telegram @usuario / WhatsApp)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-cyan-500 focus:outline-none">
+                <textarea placeholder="Descripción del producto o catálogo..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white h-24 focus:border-cyan-500 focus:outline-none"></textarea>
+                <button @click="alert('¡Propuesta recibida! El equipo comercial se pondrá en contacto.'); supplierModal = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Enviar Propuesta</button>
             </div>
         </div>
     </div>
@@ -158,48 +189,48 @@
     <div x-show="adModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-base font-bold">📢 Contratar Espacio Publicitario</h3>
+                <h3 class="text-base font-bold text-white">📢 Contratar Espacio Publicitario</h3>
                 <button @click="adModal = false" class="text-slate-400 hover:text-white">✕</button>
             </div>
-            <p class="text-xs text-slate-400">Destaca tu marca ante miles de compradores en nuestra plataforma. Pagos flexibles aceptados en USDT.</p>
+            <p class="text-xs text-slate-400">Promociona tu marca en nuestra portada. Pagos rápidos procesados en USDT.</p>
             <div class="space-y-3">
-                <input type="text" placeholder="Nombre de tu marca o empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-purple-500 focus:outline-none">
-                <input type="text" placeholder="Enlace web o red social de destino" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm focus:border-purple-500 focus:outline-none">
+                <input type="text" placeholder="Nombre de tu marca" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-purple-500 focus:outline-none">
+                <input type="text" placeholder="Enlace web de tu producto" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-purple-500 focus:outline-none">
                 <select class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-slate-300 focus:border-purple-500 focus:outline-none">
-                    <option>Banner Principal Superior (7 días) - $50 USDT</option>
-                    <option>Destacado en Catálogo General (30 días) - $120 USDT</option>
+                    <option>Banner Superior (7 días) - $50 USDT</option>
+                    <option>Destacado en Catálogo (30 días) - $120 USDT</option>
                 </select>
-                <button @click="alert('Solicitud de patrocinio registrada. Te contactaremos para coordinar el pago en USDT.'); adModal = false;" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg transition">Proceder al Pago en USDT</button>
+                <button @click="alert('Solicitud de publicidad enviada. Te contactaremos para procesar el pago en USDT.'); adModal = false;" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg transition">Pagar en USDT</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer / Canales de Contacto Directo -->
+    <!-- Footer / Canales de Atención al Cliente Directos -->
     <footer class="border-t border-slate-800 bg-slate-900/40 mt-16 py-10 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-                <p class="font-bold text-lg mb-1">Aetheria Market</p>
-                <p class="text-xs text-slate-400">Ecosistema de comercio global descentralizado y optimizado por IA.</p>
+                <p class="font-bold text-lg text-white mb-1">Aetheria Market</p>
+                <p class="text-xs text-slate-400">Ecosistema de comercio multilingüe optimizado con IA.</p>
             </div>
-            <!-- Canales de Atención al Cliente (WhatsApp, Telegram @Ristcruz, Discord, Proveedores) -->
+            <!-- Canales: WhatsApp, Telegram (@Ristcruz), Discord, Buzón de Proveedores -->
             <div class="flex flex-wrap gap-3 text-xs sm:text-sm items-center justify-center">
-                <a href="https://wa.me/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
+                <a href="https://wa.me/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
                     🟢 WhatsApp Soporte
                 </a>
-                <a href="https://t.me/Ristcruz" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
+                <a href="https://t.me/Ristcruz" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
                     ✈️ Telegram (@Ristcruz)
                 </a>
-                <a href="https://discord.gg/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60">
+                <a href="https://discord.gg/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
                     🎮 Discord Comunitario
                 </a>
                 <button @click="supplierModal = true" class="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 px-3.5 py-2 rounded-lg font-medium transition">
-                    📦 Buzón de Proveedores
+                    📦 Buzón Proveedores
                 </button>
             </div>
         </div>
     </footer>
 
-    <!-- Script de Lógica y Datos -->
+    <!-- Script Alpine.js -->
     <script>
         function storeData() {
             return {
@@ -218,10 +249,13 @@
                 ],
                 addToCart(product) {
                     this.cart.push(product);
-                    alert('¡Producto añadido al carrito con éxito!');
+                    alert('¡Producto añadido al carrito!');
+                },
+                getTotal() {
+                    return this.cart.reduce((sum, item) => sum + parseFloat(item.price), 0).toFixed(2);
                 },
                 applyCoupon() {
-                    alert('¡Cupón AETHERIA100 aplicado correctamente! 10% de descuento reflejado.');
+                    alert('¡Cupón AETHERIA100 validado correctamente!');
                 },
                 sendChatMessage() {
                     if(!this.chatInput.trim()) return;
@@ -229,27 +263,27 @@
                     let userMsg = this.chatInput;
                     this.chatInput = '';
                     setTimeout(() => {
-                        let reply = "Entendido. Recuerda que puedes contactarnos directamente por Telegram (@Ristcruz) o WhatsApp para seguimiento personalizado.";
+                        let reply = "Recuerda que para atención personalizada puedes contactarnos en Telegram (@Ristcruz) o por WhatsApp.";
                         if(userMsg.toLowerCase().includes('pago') || userMsg.toLowerCase().includes('usdt')) {
-                            reply = "Aceptamos pagos seguros en USD y criptomonedas USDT de forma automatizada.";
+                            reply = "Aceptamos pagos en USD y criptomonedas USDT de forma segura.";
                         } else if(userMsg.toLowerCase().includes('envio') || userMsg.toLowerCase().includes('envío')) {
-                            reply = "Nuestros envíos son gestionados de forma inteligente para garantizar la entrega puntual.";
+                            reply = "Nuestros envíos son gestionados automáticamente para garantizar máxima rapidez.";
                         }
                         this.chatMessages.push({ sender: 'bot', text: reply });
                     }, 800);
                 },
                 aiPublishProduct() {
                     let externalItems = [
-                        { id: 4, name: 'Sudadera Oversize Minimal', desc: 'Diseño textil importado optimizado por IA.', price: '45.00', emoji: '👕' },
+                        { id: 4, name: 'Sudadera Oversize Minimal', desc: 'Diseño textil importado y optimizado por IA.', price: '45.00', emoji: '👕' },
                         { id: 5, name: 'Mochila Antirrobo LED', desc: 'Puerto USB integrado y paneles inteligentes.', price: '75.00', emoji: '🎒' }
                     ];
                     let randomItem = externalItems[Math.floor(Math.random() * externalItems.length)];
                     this.products.push(randomItem);
-                    alert('¡La IA ha importado y adaptado un nuevo producto con éxito al catálogo: ' + randomItem.name + '!');
+                    alert('¡La IA importó y publicó un nuevo producto: ' + randomItem.name + '!');
                     this.aiPanel = false;
                 },
                 aiOptimizeOrders() {
-                    alert('¡Optimización de pedidos completada! Rutas de despacho agrupadas y procesadas.');
+                    alert('¡Optimización logarítmica completada! Cola de pedidos en ruta.');
                     this.aiPanel = false;
                 }
             }
