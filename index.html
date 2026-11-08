@@ -14,6 +14,7 @@
             --border-color: #E2E8F0;
             --accent-color: #7B2CBF;
             --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --shein-red: #FA2C55;
         }
 
         body.dark-mode {
@@ -26,7 +27,7 @@
             --shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.3s, color 0.3s; }
         body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
 
         header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
@@ -41,11 +42,13 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             text-shadow: 0 2px 10px rgba(123,44,191,0.2);
+            cursor: pointer;
         }
 
-        .header-controls { display: flex; gap: 15px; align-items: center; }
+        .header-controls { display: flex; gap: 12px; align-items: center; }
         .btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .btn-primary { background: var(--primary-gradient); color: #FFF; border: none; }
+        .btn-shein { background: #000; color: #FFF; border: none; border-radius: 4px; padding: 12px 24px; font-weight: bold; width: 100%; text-transform: uppercase; }
 
         nav { background: rgba(0,0,0,0.03); border-top: 1px solid var(--border-color); }
         .nav-links { display: flex; justify-content: center; list-style: none; gap: 20px; padding: 12px; flex-wrap: wrap; }
@@ -54,50 +57,63 @@
         .filters-bar { max-width: 1400px; margin: 20px auto; padding: 0 5%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .search-select { padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); outline: none; }
 
-        .product-grid { max-width: 1400px; margin: 0 auto; padding: 0 5%; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        .product-grid { max-width: 1400px; margin: 0 auto; padding: 0 5%; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
         
-        .product-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow); }
-        .product-card:hover { transform: translateY(-5px); }
+        .product-card { background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow); cursor: pointer; }
+        .product-card:hover { transform: translateY(-4px); }
 
-        .img-container { position: relative; width: 100%; height: 260px; background: #EEE; overflow: hidden; }
+        .img-container { position: relative; width: 100%; height: 280px; background: #F8FAFC; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .product-img { width: 100%; height: 100%; object-fit: cover; }
         
         .watermark {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.45);
-            text-shadow: 0 0 4px rgba(0,0,0,0.6);
+            color: rgba(0, 0, 0, 0.25);
             white-space: nowrap;
             pointer-events: none;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        .product-details { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { font-weight: 700; margin-bottom: 5px; font-size: 1rem; }
-        .product-review { font-size: 0.82rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
-        .product-price { font-size: 1.25rem; font-weight: 800; color: #10B981; }
+        .product-details { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title { font-weight: 600; margin-bottom: 5px; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-review { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-bottom: 8px; }
+        .product-price { font-size: 1.15rem; font-weight: 800; color: var(--shein-red); }
 
-        .badge-discount { position: absolute; top: 10px; right: 10px; background: #EF4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+        .badge-discount { position: absolute; top: 10px; right: 10px; background: var(--shein-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 
+        /* Estilos Detalle Producto tipo SHEIN */
+        .shein-detail-box { display: flex; flex-direction: column; gap: 15px; }
+        @media(min-width: 768px) {
+            .shein-detail-box { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        }
+        .shein-price-banner { background: linear-gradient(90deg, #FF4B2B, #FF416C); color: white; padding: 10px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .size-selector, .color-selector { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+        .size-btn { border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); padding: 8px 14px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+        .size-btn.active { border-color: #000; background: #000; color: #FFF; }
+        .color-thumb { width: 36px; height: 36px; border-radius: 4px; border: 2px solid transparent; cursor: pointer; }
+        .color-thumb.active { border-color: #000; }
+
+        /* Carrito */
         .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border-color); z-index: 1000; transition: right 0.4s ease; padding: 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
         .cart-drawer.open { right: 0; }
         .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-
         .cart-items { flex-grow: 1; overflow-y: auto; margin: 15px 0; }
         .cart-item { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
 
         .receipt-box { background: rgba(0,0,0,0.03); border: 1px dashed var(--border-color); padding: 15px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px; }
         .receipt-line { display: flex; justify-content: space-between; margin-bottom: 5px; }
 
+        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
-        .modal-content { background: var(--bg-card); border-radius: 12px; padding: 25px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .modal-content { background: var(--bg-card); border-radius: 12px; padding: 25px; max-width: 650px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
         .close-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.5rem; }
 
+        /* Bot Widget */
         .bot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 950; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
         .bot-window { width: 320px; height: 420px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; display: none; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
         .bot-window.active { display: flex; }
@@ -110,7 +126,6 @@
 
         .wallet-address { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; word-break: break-all; margin: 10px 0; border: 1px solid var(--border-color); }
         .qr-placeholder { display: flex; justify-content: center; margin: 15px 0; }
-        
         .legal-text { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; text-align: justify; }
     </style>
 </head>
@@ -118,7 +133,7 @@
 
     <header>
         <div class="top-bar">
-            <h1 class="brand-title">Aetheria Market</h1>
+            <h1 class="brand-title" onclick="filterCat('all')">Aetheria Market</h1>
             <div class="header-controls">
                 <button class="btn" onclick="toggleTheme()" id="btnTheme">🌙 Modo Oscuro</button>
                 <button class="btn" onclick="toggleLang()" id="btnLang">🌐 EN</button>
@@ -153,6 +168,15 @@
 
     <main class="product-grid" id="productGrid"></main>
 
+    <!-- Modal Detalle SHEIN -->
+    <div class="modal" id="modalProductDetail">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalProductDetail')">✕</span>
+            <div class="shein-detail-box" id="sheinDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- Carrito -->
     <div class="cart-drawer" id="cartDrawer">
         <div class="cart-header">
             <h3 id="txtCartTitle">Carrito de Compras</h3>
@@ -164,7 +188,7 @@
             <div class="receipt-line"><span id="lblSubtotal">Subtotal Base:</span> <span id="rSubtotal">0.00 USDT</span></div>
             <div class="receipt-line"><span id="lblImpsv">IMPSV (5%):</span> <span id="rImpsv">0.00 USDT</span></div>
             <div class="receipt-line"><span id="lblDelivery">Imp. Entrega (3%):</span> <span id="rDelivery">0.00 USDT</span></div>
-            <div class="receipt-line" style="color: #EF4444;"><span id="lblCoupon">Cupón (2%):</span> <span id="rCoupon">-0.00 USDT</span></div>
+            <div class="receipt-line" style="color: var(--shein-red);"><span id="lblCoupon">Cupón (2%):</span> <span id="rCoupon">-0.00 USDT</span></div>
             <div class="receipt-line" style="color: #10B981;"><span id="lblBulk">Desc. Especial (>100 USDT & >3 itm 3.4%):</span> <span id="rBulk">-0.00 USDT</span></div>
             <hr style="margin: 8px 0; border: 0; border-top: 1px solid var(--border-color);">
             <div class="receipt-line" style="font-weight: bold; font-size: 1rem;"><span id="lblTotal">Total a Pagar:</span> <span id="rTotal">0.00 USDT</span></div>
@@ -173,6 +197,7 @@
         <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="checkout()" id="btnCheckout">Pagar con USDT (Red TRON)</button>
     </div>
 
+    <!-- Assistant Bot -->
     <div class="bot-widget">
         <div class="bot-window" id="botWindow">
             <div class="bot-header">
@@ -188,7 +213,7 @@
         <button class="btn btn-primary" style="border-radius: 50%; width: 50px; height: 50px; padding:0; justify-content:center;" onclick="toggleBot()">🤖</button>
     </div>
 
-    <!-- Modales -->
+    <!-- Modales adicionales -->
     <div class="modal" id="modalCheckout">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal('modalCheckout')">✕</span>
@@ -251,56 +276,30 @@
     <script>
         const i18n = {
             es: {
-                cartTitle: "Carrito de Compras",
-                subtotal: "Subtotal Base:",
-                impsv: "IMPSV (5%):",
-                delivery: "Imp. Entrega (3%):",
-                coupon: "Cupón (2%):",
-                bulk: "Desc. Especial (>100 USDT & >3 itm 3.4%):",
-                total: "Total a Pagar:",
-                checkout: "Pagar con USDT (Red TRON)",
-                payTitle: "Pago con USDT (Red TRON)",
+                cartTitle: "Carrito de Compras", subtotal: "Subtotal Base:", impsv: "IMPSV (5%):", delivery: "Imp. Entrega (3%):",
+                coupon: "Cupón (2%):", bulk: "Desc. Especial (>100 USDT & >3 itm 3.4%):", total: "Total a Pagar:",
+                checkout: "Pagar con USDT (Red TRON)", payTitle: "Pago con USDT (Red TRON)",
                 payDesc: "Transfiere el monto exacto de tu recibo a la siguiente dirección de la red TRON (TRC-20):",
-                confirmPay: "Confirmar Transacción",
-                supTitle: "Portal de Publicidad para Proveedores",
+                confirmPay: "Confirmar Transacción", supTitle: "Portal de Publicidad para Proveedores",
                 supDesc: "Promociona tus productos en Aetheria Market. Tarifas de espacio publicitario:",
-                supDisc: "✨ ¡Descuento automático del 1.5% si tu contrato supera los 5 días!",
-                feedTitle: "Buzón de Quejas y Sugerencias",
-                sendFeed: "Enviar Opinión",
-                qrTitle: "Verificación Anti-Bot",
-                qrDesc: "Escanea este código QR dinámico desde tu dispositivo móvil para validar que eres un usuario humano real.",
-                verified: "Usuario Validado",
-                legalTitle: "Marco Jurídico y Derechos de Autor",
-                sortLbl: "Ordenar por:",
-                sortAsc: "Precio: Menor a Mayor",
-                sortDesc: "Precio: Mayor a Menor (Exclusivo)",
+                supDisc: "✨ ¡Descuento automático del 1.5% si tu contrato supera los 5 días!", feedTitle: "Buzón de Quejas y Sugerencias",
+                sendFeed: "Enviar Opinión", qrTitle: "Verificación Anti-Bot", qrDesc: "Escanea este código QR dinámico para validar que eres un usuario humano real.",
+                verified: "Usuario Validado", legalTitle: "Marco Jurídico y Derechos de Autor", sortLbl: "Ordenar por:",
+                sortAsc: "Precio: Menor a Mayor", sortDesc: "Precio: Mayor a Menor (Exclusivo)",
                 nAll: "Todos", nBeauty: "Belleza & Cosmética", nClothes: "Ropa", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
                 botTitle: "Asistente Aetheria IA & Registro"
             },
             en: {
-                cartTitle: "Shopping Cart",
-                subtotal: "Base Subtotal:",
-                impsv: "IMPSV Tax (5%):",
-                delivery: "Delivery Tax (3%):",
-                coupon: "Coupon (2%):",
-                bulk: "Bulk Discount (>100 USDT & >3 itm 3.4%):",
-                total: "Total Amount:",
-                checkout: "Pay with USDT (TRON Network)",
-                payTitle: "USDT Payment (TRON Network)",
+                cartTitle: "Shopping Cart", subtotal: "Base Subtotal:", impsv: "IMPSV Tax (5%):", delivery: "Delivery Tax (3%):",
+                coupon: "Coupon (2%):", bulk: "Bulk Discount (>100 USDT & >3 itm 3.4%):", total: "Total Amount:",
+                checkout: "Pay with USDT (TRON Network)", payTitle: "USDT Payment (TRON Network)",
                 payDesc: "Transfer the exact receipt amount to the following TRON (TRC-20) address:",
-                confirmPay: "Confirm Transaction",
-                supTitle: "Supplier Advertising Portal",
+                confirmPay: "Confirm Transaction", supTitle: "Supplier Advertising Portal",
                 supDesc: "Promote your products on Aetheria Market. Advertising rates:",
-                supDisc: "✨ Automatic 1.5% discount for contracts over 5 days!",
-                feedTitle: "Complaints & Feedback Box",
-                sendFeed: "Submit Feedback",
-                qrTitle: "Anti-Bot Verification",
-                qrDesc: "Scan this dynamic QR code from your mobile device to verify you are a real human.",
-                verified: "User Verified",
-                legalTitle: "Legal Framework & Copyright",
-                sortLbl: "Sort by:",
-                sortAsc: "Price: Low to High",
-                sortDesc: "Price: High to Low (Exclusive)",
+                supDisc: "✨ Automatic 1.5% discount for contracts over 5 days!", feedTitle: "Complaints & Feedback Box",
+                sendFeed: "Submit Feedback", qrTitle: "Anti-Bot Verification", qrDesc: "Scan this dynamic QR code to verify you are a real human.",
+                verified: "User Verified", legalTitle: "Legal Framework & Copyright", sortLbl: "Sort by:",
+                sortAsc: "Price: Low to High", sortDesc: "Price: High to Low (Exclusive)",
                 nAll: "All", nBeauty: "Beauty & Cosmetics", nClothes: "Clothing", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
                 botTitle: "Aetheria AI Assistant & Onboarding"
             }
@@ -309,26 +308,47 @@
         let currentLang = 'es';
         let cart = [];
         let products = [];
+        let currentSelectedSize = 'M';
+        let currentSelectedColor = '#8B0000';
 
         const categories = ['belleza', 'ropa', 'perfumes', 'zapatos', 'relojes'];
         const brands = ['Aetheria Luxe', 'Elegance Paris', 'UrbanVibe', 'VelvetTouch', 'Aura Glow'];
+        const colorsList = ['#8B0000', '#4B0082', '#000000', '#FFC0CB', '#808080', '#FFFFFF'];
+        const colorNames = ['Vino', 'Púrpura', 'Negro', 'Rosa', 'Gris', 'Blanco'];
+        const sizesList = ['0(XXS)', '2(XS)', '4(S)', '6(M)', '8/10(L)', '12(XL)', '14(XXL)'];
+
+        // Generador SVG confiable para evitar fallos de red
+        function getSVGImage(colorHex, categoryName, modelNum) {
+            const encodedColor = encodeURIComponent(colorHex);
+            const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+                <rect width="300" height="300" fill="%23F1F5F9"/>
+                <circle cx="150" cy="130" r="80" fill="${encodedColor}" opacity="0.85"/>
+                <path d="M110 120 L190 120 L170 200 L130 200 Z" fill="%23FFFFFF" opacity="0.3"/>
+                <text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23334155" font-family="sans-serif" font-weight="bold" font-size="14">${categoryName.toUpperCase()} MOD-${modelNum}</text>
+            </svg>`;
+            return `data:image/svg+xml;utf8,${svgStr}`;
+        }
 
         function generate300Products() {
             let list = [];
             let id = 1;
             for (let c of categories) {
                 for (let i = 1; i <= 60; i++) {
-                    let basePrice = Math.floor(Math.random() * 250) + 12;
-                    let titleEs = `${c.charAt(0).toUpperCase() + c.slice(1)} ${brands[i % 5]} Mod-${i}`;
+                    let basePrice = Math.floor(Math.random() * 220) + 10;
+                    let originalPrice = Math.floor(basePrice * 1.35);
+                    let titleEs = `${c.charAt(0).toUpperCase() + c.slice(1)} ${brands[i % 5]} Conjunto Elegante Mod-${i}`;
+                    let chosenColor = colorsList[i % colorsList.length];
                     list.push({
                         id: id++,
                         category: c,
                         title: titleEs,
                         price: basePrice,
-                        review: `Reseña: Calidad premium verificada. Tallas y tonos disponibles. Vendedor certificado.`,
-                        img: `https://picsum.photos/seed/${c}${i}/300/300`,
+                        originalPrice: originalPrice,
+                        review: `Reseña: Calidad premium comprobada ⭐ 4.87 (1000+). Tela versátil y adaptable.`,
+                        img: getSVGImage(chosenColor, c, i),
+                        colorHex: chosenColor,
                         model: `V-${100+i}`,
-                        discount: i % 4 === 0 ? 15 : 0
+                        discount: Math.floor(((originalPrice - basePrice) / originalPrice) * 100)
                     });
                 }
             }
@@ -343,23 +363,88 @@
             items.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
+                card.onclick = () => openProductDetail(p.id);
                 card.innerHTML = `
-                    ${p.discount > 0 ? `<div class="badge-discount">-${p.discount}%</div>` : ''}
+                    <div class="badge-discount">-${p.discount}%</div>
                     <div class="img-container">
-                        <img src="${p.img}" class="product-img" alt="${p.title}" loading="lazy">
+                        <img src="${p.img}" class="product-img" alt="${p.title}">
                         <div class="watermark">AETHERIA MARKET</div>
                     </div>
                     <div class="product-details">
                         <div class="product-title">${p.title}</div>
-                        <div class="product-review">"${p.review}"</div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
-                            <span class="product-price">${p.price} USDT</span>
-                            <button class="btn btn-primary" onclick="addToCart(${p.id})">+ Agregar</button>
+                        <div class="product-review">${p.review}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                            <div>
+                                <span class="product-price">${p.price} USDT</span>
+                                <span style="font-size:0.75rem; text-decoration:line-through; color:var(--text-muted); margin-left:4px;">${p.originalPrice} USDT</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); addToCartDirect(${p.id})">+ Agregar</button>
                         </div>
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function openProductDetail(id) {
+            const p = products.find(prod => prod.id === id);
+            const container = document.getElementById('sheinDetailContent');
+            
+            let colorThumbsHTML = colorsList.map((c, idx) => `
+                <div class="color-thumb ${c === p.colorHex ? 'active' : ''}" style="background:${c};" onclick="selectColor(this)"></div>
+            `).join('');
+
+            let sizeBtnsHTML = sizesList.map(s => `
+                <button class="size-btn ${s.includes('M') ? 'active' : ''}" onclick="selectSize(this, '${s}')">${s}</button>
+            `).join('');
+
+            container.innerHTML = `
+                <div>
+                    <div class="img-container" style="height:350px; border-radius:8px;">
+                        <img src="${p.img}" class="product-img" id="detailMainImg">
+                        <div class="watermark">AETHERIA MARKET</div>
+                    </div>
+                </div>
+                <div>
+                    <h2 style="font-size:1.2rem; margin-bottom:10px;">${p.title}</h2>
+                    <div class="shein-price-banner">
+                        <div>
+                            <span style="font-size:1.4rem; font-weight:bold;">${p.price} USDT</span>
+                            <span style="text-decoration:line-through; opacity:0.8; font-size:0.9rem; margin-left:6px;">${p.originalPrice} USDT</span>
+                        </div>
+                        <span style="background:rgba(255,255,255,0.2); padding:3px 8px; border-radius:4px; font-size:0.8rem;">Ahorra ${p.originalPrice - p.price} USDT</span>
+                    </div>
+
+                    <div style="margin-top:15px;">
+                        <label style="font-size:0.85rem; font-weight:bold;">Color Seleccionado:</label>
+                        <div class="color-selector">${colorThumbsHTML}</div>
+                    </div>
+
+                    <div style="margin-top:15px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <label style="font-size:0.85rem; font-weight:bold;">Talla US:</label>
+                            <span style="font-size:0.75rem; color:var(--accent-color); cursor:pointer;">📏 Guía de tallas</span>
+                        </div>
+                        <div class="size-selector">${sizeBtnsHTML}</div>
+                    </div>
+
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin:15px 0;">${p.review}</p>
+
+                    <button class="btn-shein" onclick="addToCartFromDetail(${p.id})">🛒 Añadir a la Bolsa</button>
+                </div>
+            `;
+            openModal('modalProductDetail');
+        }
+
+        function selectSize(btn, size) {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentSelectedSize = size;
+        }
+
+        function selectColor(thumb) {
+            document.querySelectorAll('.color-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
         }
 
         function sortProducts() {
@@ -378,10 +463,18 @@
             }
         }
 
-        function addToCart(id) {
+        function addToCartDirect(id) {
             let item = products.find(p => p.id === id);
-            cart.push(item);
+            cart.push({...item, selectedSize: 'M'});
             updateCart();
+            animateCartBtn();
+        }
+
+        function addToCartFromDetail(id) {
+            let item = products.find(p => p.id === id);
+            cart.push({...item, selectedSize: currentSelectedSize});
+            updateCart();
+            closeModal('modalProductDetail');
             animateCartBtn();
         }
 
@@ -403,8 +496,8 @@
                 div.className = 'cart-item';
                 div.innerHTML = `
                     <div>
-                        <div style="font-weight:bold; font-size:0.9rem;">${item.title}</div>
-                        <div style="font-size:0.8rem; color:var(--text-muted);">${item.price} USDT</div>
+                        <div style="font-weight:bold; font-size:0.85rem;">${item.title}</div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Talla: ${item.selectedSize || 'M'} | ${item.price} USDT</div>
                     </div>
                     <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="removeFromCart(${index})">✕</button>
                 `;
@@ -435,9 +528,7 @@
             updateCart();
         }
 
-        function toggleCart() {
-            document.getElementById('cartDrawer').classList.toggle('open');
-        }
+        function toggleCart() { document.getElementById('cartDrawer').classList.toggle('open'); }
 
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -497,7 +588,7 @@
             appendBotMsg("¡Hola! 👋 Bienvenido a Aetheria Market. Soy tu asistente de inscripción e IA de compras.");
             setTimeout(() => {
                 appendBotMsg("📌 **Compra Rápida**: Envíos prioritarios a todo el país. 🚚\n📌 **Cupones**: Tienes un 2% de descuento automático en tu carrito.\n📌 **Fechas Especiales**: ¡Descuento extra del 3.4% en compras mayores a 100 USDT de 3+ artículos!");
-            }, 1000);
+            }, 800);
         }
 
         function appendBotMsg(text) {
@@ -524,7 +615,7 @@
             msgs.scrollTop = msgs.scrollHeight;
 
             setTimeout(() => {
-                let reply = "Entiendo tu consulta. Como IA de Aetheria Market, gestiono precios, cupones y la optimización de tus recibos. ¿Deseas ayuda con el carrito o un producto?";
+                let reply = "Entiendo tu consulta. Como IA de Aetheria Market, me encargo de organizar los productos, ofertas y recibos.";
                 if(val.toLowerCase().includes('envio') || val.toLowerCase().includes('rápido')) {
                     reply = "El envío rápido prioriza tu pedido para entrega expresa con impuesto reducido del 3%.";
                 } else if(val.toLowerCase().includes('pago') || val.toLowerCase().includes('usdt')) {
@@ -534,18 +625,14 @@
             }, 800);
         }
 
-        function handleBotKey(e) {
-            if(e.key === 'Enter') sendBotMsg();
-        }
+        function handleBotKey(e) { if(e.key === 'Enter') sendBotMsg(); }
 
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             if(id === 'modalQRVerification') generateSVGQR('qrVerifyContainer');
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         function checkout() {
             if(cart.length === 0) {
@@ -581,7 +668,7 @@
             closeModal('modalFeedback');
         }
 
-        // Inicialización
+        // Inicializar catálogo
         renderProducts(products);
     </script>
 </body>
