@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es" x-data="{ 
+    darkMode: false, 
+    lang: 'es', 
+    currency: 'USD',
+    cart: [],
+    showCart: false,
+    showBot: false,
+    showQR: false,
+    showScraper: false,
+    searchQuery: '',
+    selectedCategory: 'all',
+    couponCode: '',
+    discount: 0,
+    botMessages: [
+        { sender: 'bot', text: '¡Hola! Soy Aetheria AI. ¿En qué puedo ayudarte hoy con tus compras o envíos?' }
+    ],
+    userInput: '',
+    products: [
+        { id: 1, name: 'Vestido Midi Floral Elegante', category: 'women', price: 45.00, cost: 22.50, img: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80', source: 'SheIn' },
+        { id: 2, name: 'Zapatillas Urbanas de Cuero Premium', category: 'men', price: 80.00, cost: 40.00, img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80', source: 'Amazon' },
+        { id: 3, name: 'Chaqueta Casual Cortavientos', category: 'men', price: 65.00, cost: 32.50, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80', source: 'SheIn' },
+        { id: 4, name: 'Bolso de Mano Minimalista', category: 'women', price: 35.00, cost: 17.50, img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80', source: 'Amazon' }
+    ],
+    reviews: [
+        { name: 'Carlos M.', comment: 'Excelente tienda, el envío rápido llegó antes de lo esperado.', rating: 5 },
+        { name: 'Ana Sofía', comment: 'Me encantó la ropa y el verificador QR da mucha seguridad.', rating: 5 }
+    ],
+    newReview: { name: '', comment: '', rating: 5 },
+    
+    addToCart(product, fastShipping = false) {
+        let item = this.cart.find(i => i.id === product.id && i.fast === fastShipping);
+        if(item) {
+            item.qty++;
+        } else {
+            this.cart.push({ ...product, qty: 1, fast: fastShipping });
+        }
+        this.showCart = true;
+    },
+    
+    subtotal() {
+        return this.cart.reduce((sum, item) => sum + (item.price + (item.fast ? 12 : 0)) * item.qty, 0);
+    },
+    
+    shippingFee() {
+        return this.subtotal() > 0 ? this.subtotal() * 0.07 : 0;
+    },
+    
+    taxISPV() {
+        return this.subtotal() > 0 ? this.subtotal() * 0.03 : 0;
+    },
+    
+    applyCoupon() {
+        if(this.couponCode === 'AETHERIA100' && this.subtotal() >= 100) {
+            this.discount = 10;
+            alert('¡Cupón aplicado con éxito! -$10 USD');
+        } else {
+            alert('Cupón no válido o el subtotal debe ser superior a $100 USD.');
+            this.discount = 0;
+        }
+    },
+    
+    total() {
+        let t = this.subtotal() + this.shippingFee() + this.taxISPV() - this.discount;
+        return t > 0 ? t : 0;
+    },
+    
+    sendBotMessage() {
+        if(!this.userInput.trim()) return;
+        this.botMessages.push({ sender: 'user', text: this.userInput });
+        let query = this.userInput.toLowerCase();
+        setTimeout(() => {
+            let reply = 'Entiendo tu consulta. Para pagos puedes usar USDT o USD y cuentas con soporte de envíos rápidos.';
+            if(query.includes('pago') || query.includes('usdt')) {
+                reply = 'Aceptamos pagos seguros en USDT (Red Tron/Multi-chain) y USD en efectivo o transferencias.';
+            } else if(query.includes('envio') || query.includes('tiempo')) {
+                reply = 'El envío estándar tarda de 5 a 8 días (7% sobre compra). El envío rápido express está disponible por un costo adicional.';
+            } else if(query.includes('cupon')) {
+                reply = 'Puedes usar el código AETHERIA100 si tu compra supera los $100 USD para obtener un descuento especial.';
+            }
+            this.botMessages.push({ sender: 'bot', text: reply });
+        }, 600);
+        this.userInput = '';
+    }
+}" :class="{ 'dark': darkMode }" x-init="console.log('Aetheria Market Iniciado')">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheria Market - Global Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: { bg: '#F8F9FA', card: '#FFFFFF', text: '#2D3748', accent: '#6366F1' },
+                        darkTheme: { bg: '#0F172A', card: '#1E293B', text: '#F1F5F9', accent: '#818CF8' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-pastel-bg text-pastel-text dark:bg-darkTheme-bg dark:text-darkTheme-text transition-colors duration-300 min-h-screen flex flex-col justify-between">
+
+    <!-- BARRA SUPERIOR / HEADER -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-darkTheme-card/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-black bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">Aetheria Market</span>
+            </div>
+            
+            <!-- Buscador -->
+            <div class="hidden md:flex items-center bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full w-1/3">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 mr-2"></i>
+                <input type="text" x-model="searchQuery" :placeholder="lang === 'es' ? 'Buscar ropa, zapatos, accesorios...' : 'Search clothing, shoes...'" class="bg-transparent w-full focus:outline-none text-sm">
+            </div>
+
+            <!-- Controles (Idioma, Moneda, Modo Oscuro, Carrito) -->
+            <div class="flex items-center space-x-3">
+                <select x-model="lang" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
+                    <option value="es" class="dark:bg-gray-800">ES</option>
+                    <option value="en" class="dark:bg-gray-800">EN</option>
+                </select>
+
+                <select x-model="currency" class="bg-transparent text-sm font-semibold focus:outline-none cursor-pointer">
+                    <option value="USD" class="dark:bg-gray-800">USD</option>
+                    <option value="USDT" class="dark:bg-gray-800">USDT</option>
+                </select>
+
+                <button @click="darkMode = !darkMode" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <i :class="darkMode ? 'fa-solid fa-sun text-yellow-400' : 'fa-solid fa-moon text-gray-600'"></i>
+                </button>
+
+                <button @click="showQR = true" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition" title="Verificar Usuario QR">
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
+
+                <button @click="showCart = true" class="relative bg-indigo-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 shadow hover:bg-indigo-700 transition">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="text-sm font-bold" x-text="cart.reduce((a, b) => a + b.qty, 0)"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PANEL SIMULADOR AI / SCRAPER -->
+    <div class="bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900 py-2 px-4 text-center text-xs flex justify-center items-center space-x-4">
+        <span><i class="fa-solid fa-robot mr-1 text-indigo-600"></i> <span x-text="lang === 'es' ? 'Sincronizador AI SheIn & Amazon Activo' : 'AI SheIn & Amazon Sync Active'"></span></span>
+        <button @click="showScraper = true" class="bg-indigo-600 text-white px-3 py-1 rounded shadow text-xs hover:bg-indigo-700 transition">
+            <span x-text="lang === 'es' ? 'Importar Productos (AI)' : 'Import Products (AI)'"></span>
+        </button>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-3xl p-8 text-white mb-10 shadow-lg flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 max-w-xl">
+                <h1 class="text-3xl md:text-5xl font-extrabold mb-4" x-text="lang === 'es' ? 'Moda Global & Proveedores Locales' : 'Global Fashion & Local Suppliers'"></h1>
+                <p class="text-indigo-100 text-sm md:text-base mb-6" x-text="lang === 'es' ? 'Artículos de tendencia importados automáticamente con doble de calidad y envío rápido.' : 'Trending items auto-imported with high quality and rapid delivery.'"></p>
+                <div class="flex space-x-3">
+                    <button @click="selectedCategory = 'all'" class="bg-white text-indigo-600 px-5 py-2.5 rounded-xl font-bold shadow hover:bg-indigo-50 transition" x-text="lang === 'es' ? 'Ver Todo' : 'View All'"></button>
+                    <button @click="showBot = true" class="border border-white text-white px-5 py-2.5 rounded-xl font-bold hover:bg-white/10 transition" x-text="lang === 'es' ? 'Hablar con Bot IA' : 'Chat with AI Bot'"></button>
+                </div>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center">
+                <i class="fa-solid fa-shield-halved text-4xl mb-2 text-yellow-300"></i>
+                <h3 class="font-bold text-lg">Cupón Especial</h3>
+                <p class="text-xs text-indigo-100 mb-2">Usa <span class="font-mono bg-black/30 px-1 py-0.5 rounded">AETHERIA100</span> en compras > $100 USD</p>
+            </div>
+        </div>
+
+        <!-- Filtros por categoría -->
+        <div class="flex space-x-3 mb-6 overflow-x-auto pb-2">
+            <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-800'" class="px-4 py-2 rounded-xl text-sm font-semibold transition" x-text="lang === 'es' ? 'Todos' : 'All'"></button>
+            <button @click="selectedCategory = 'women'" :class="selectedCategory === 'women' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-800'" class="px-4 py-2 rounded-xl text-sm font-semibold transition" x-text="lang === 'es' ? 'Mujer' : 'Women'"></button>
+            <button @click="selectedCategory = 'men'" :class="selectedCategory === 'men' ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-800'" class="px-4 py-2 rounded-xl text-sm font-semibold transition" x-text="lang === 'es' ? 'Hombre' : 'Men'"></button>
+        </div>
+
+        <!-- Catálogo de Productos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <template x-for="product in products.filter(p => (selectedCategory === 'all' || p.category === selectedCategory) && p.name.toLowerCase().includes(searchQuery.toLowerCase()))" :key="product.id">
+                <div class="bg-white dark:bg-darkTheme-card rounded-2xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-800 flex flex-col justify-between transition transform hover:-translate-y-1">
+                    <div>
+                        <div class="relative h-56 bg-gray-200 dark:bg-gray-700">
+                            <img :src="product.img" :alt="product.name" class="w-full h-full object-cover">
+                            <span class="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm" x-text="product.source"></span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-base mb-1" x-text="product.name"></h3>
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-lg font-black text-indigo-600 dark:text-indigo-400" x-text="currency + ' $' + product.price.toFixed(2)"></span>
+                                <span class="text-xs text-gray-400 line-through" x-text="'$' + product.cost.toFixed(2)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 grid grid-cols-2 gap-2">
+                        <button @click="addToCart(product, false)" class="bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-xs font-bold py-2 rounded-xl transition" x-text="lang === 'es' ? 'Añadir' : 'Add'"></button>
+                        <button @click="addToCart(product, true)" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded-xl transition" x-text="lang === 'es' ? 'Envío Rápido' : 'Fast Ship'"></button>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- SECCIÓN DE RESEÑAS -->
+        <section class="mt-16 bg-white dark:bg-darkTheme-card rounded-3xl p-8 shadow-sm border border-gray-100 dark:border-gray-800">
+            <h2 class="text-2xl font-bold mb-6" x-text="lang === 'es' ? 'Reseñas de la Comunidad' : 'Community Reviews'"></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <template x-for="review in reviews">
+                    <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-sm" x-text="review.name"></span>
+                            <div class="text-yellow-400 text-xs">
+                                <template x-for="i in review.rating"><i class="fa-solid fa-star"></i></template>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-300" x-text="review.comment"></p>
+                    </div>
+                </template>
+            </div>
+            <!-- Agregar Reseña Form -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h3 class="text-sm font-bold mb-3" x-text="lang === 'es' ? 'Deja tu opinión sobre la tienda:' : 'Leave your feedback:'"></h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input type="text" x-model="newReview.name" :placeholder="lang === 'es' ? 'Tu Nombre' : 'Your Name'" class="bg-gray-100 dark:bg-gray-800 p-2 text-sm rounded-xl focus:outline-none">
+                    <input type="text" x-model="newReview.comment" :placeholder="lang === 'es' ? 'Comentario u opinión...' : 'Comment...'" class="bg-gray-100 dark:bg-gray-800 p-2 text-sm rounded-xl focus:outline-none">
+                    <button @click="if(newReview.name && newReview.comment) { reviews.push({...newReview}); newReview.name=''; newReview.comment=''; alert('¡Reseña publicada!'); }" class="bg-indigo-600 text-white text-sm font-bold py-2 rounded-xl hover:bg-indigo-700 transition" x-text="lang === 'es' ? 'Publicar Reseña' : 'Post Review'"></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white dark:bg-darkTheme-card border-t border-gray-200 dark:border-gray-700 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 Aetheria Market. Todos los derechos reservados. Pagos en USD y USDT.</p>
+    </footer>
+
+    <!-- MODAL DE CARRITO Y CHECKOUT -->
+    <div x-show="showCart" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-end" style="display: none;">
+        <div class="bg-white dark:bg-darkTheme-card w-full max-w-md h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold" x-text="lang === 'es' ? 'Tu Carrito de Compras' : 'Your Shopping Cart'"></h2>
+                    <button @click="showCart = false" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+
+                <!-- Lista de items -->
+                <div class="space-y-4 mb-6">
+                    <template x-for="(item, index) in cart" :key="index">
+                        <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
+                            <div>
+                                <h4 class="font-bold text-sm" x-text="item.name"></h4>
+                                <p class="text-xs text-gray-500" x-text="(item.fast ? 'Envío Rápido Express (+12$)' : 'Estándar') + ' | Cant: ' + item.qty"></p>
+                            </div>
+                            <div class="text-right">
+                                <span class="font-bold text-sm" x-text="currency + ' $' + ((item.price + (item.fast ? 12 : 0)) * item.qty).toFixed(2)"></span>
+                                <button @click="cart.splice(index, 1)" class="text-red-500 text-xs block mt-1 hover:underline">Eliminar</button>
+                            </div>
+                        </div>
+                    </template>
+                    <p x-show="cart.length === 0" class="text-center text-gray-400 text-sm py-8" x-text="lang === 'es' ? 'Tu carrito está vacío' : 'Your cart is empty'"></p>
+                </div>
+
+                <!-- Cupones -->
+                <div class="flex space-x-2 mb-4" x-show="cart.length > 0">
+                    <input type="text" x-model="couponCode" placeholder="Código (ej. AETHERIA100)" class="bg-gray-100 dark:bg-gray-800 px-3 py-1.5 text-xs rounded-xl w-full focus:outline-none uppercase font-mono">
+                    <button @click="applyCoupon()" class="bg-gray-800 text-white text-xs px-4 py-1.5 rounded-xl font-bold">Aplicar</button>
+                </div>
+
+                <!-- Desglose de Factura -->
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl space-y-2 text-xs border border-gray-200 dark:border-gray-700" x-show="cart.length > 0">
+                    <div class="flex justify-between">
+                        <span x-text="lang === 'es' ? 'Subtotal Productos:' : 'Subtotal:'"></span>
+                        <span class="font-bold" x-text="currency + ' $' + subtotal().toFixed(2)"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span x-text="lang === 'es' ? 'Costo de Envío (7%):' : 'Shipping Fee (7%):'"></span>
+                        <span class="font-bold" x-text="currency + ' $' + shippingFee().toFixed(2)"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span x-text="lang === 'es' ? 'ISPV (3% Impuesto):' : 'ISPV Tax (3%):'"></span>
+                        <span class="font-bold" x-text="currency + ' $' + taxISPV().toFixed(2)"></span>
+                    </div>
+                    <div class="flex justify-between text-indigo-500" x-show="discount > 0">
+                        <span>Descuento Cupón:</span>
+                        <span class="font-bold" x-text="'- $' + discount.toFixed(2)"></span>
+                    </div>
+                    <div class="border-t border-gray-200 dark:border-gray-700 pt-2 flex justify-between text-sm font-black">
+                        <span x-text="lang === 'es' ? 'Total Final:' : 'Final Total:'"></span>
+                        <span class="text-indigo-600 dark:text-indigo-400" x-text="currency + ' $' + total().toFixed(2)"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de Pago / Recibo -->
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700" x-show="cart.length > 0">
+                <button @click="alert('¡Recibo generado y enviado por el Bot IA!\nTotal a pagar: ' + currency + ' $' + total().toFixed(2) + '\nGracias por su compra en Aetheria Market.'); cart = []; showCart = false;" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-lg text-sm">
+                    <span x-text="lang === 'es' ? 'Pagar con Recibo AI' : 'Pay with AI Receipt'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BOT DE ATENCIÓN IA -->
+    <div x-show="showBot" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4" style="display: none;">
+        <div class="bg-white dark:bg-darkTheme-card w-full max-w-lg h-[500px] rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden border border-gray-100 dark:border-gray-800">
+            <div class="bg-indigo-600 text-white p-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-robot"></i>
+                    <h3 class="font-bold text-sm">Asistente Virtual Aetheria AI</h3>
+                </div>
+                <button @click="showBot = false" class="text-white hover:text-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-grow p-4 overflow-y-auto space-y-3">
+                <template x-for="msg in botMessages">
+                    <div :class="msg.sender === 'user' ? 'text-right' : 'text-left'">
+                        <div :class="msg.sender === 'user' ? 'bg-indigo-600 text-white ml-auto' : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 mr-auto'" class="inline-block p-3 rounded-2xl text-xs max-w-[80%] shadow-sm" x-text="msg.text"></div>
+                    </div>
+                </template>
+            </div>
+            <div class="p-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex space-x-2">
+                <input type="text" x-model="userInput" @keydown.enter="sendBotMessage()" placeholder="Escribe tu duda sobre envíos, pagos..." class="bg-white dark:bg-gray-700 px-3 py-2 text-xs rounded-xl w-full focus:outline-none border border-gray-200 dark:border-gray-600">
+                <button @click="sendBotMessage()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL QR VERIFICACIÓN -->
+    <div x-show="showQR" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4" style="display: none;">
+        <div class="bg-white dark:bg-darkTheme-card w-full max-w-sm rounded-3xl shadow-2xl p-6 text-center border border-gray-100 dark:border-gray-800">
+            <div class="flex justify-end mb-2">
+                <button @click="showQR = false" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Verificación de Usuario</h3>
+            <p class="text-xs text-gray-500 mb-4">Escanee el código QR para autenticar su cuenta de cliente en Aetheria Market.</p>
+            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-2xl inline-block mb-4">
+                <i class="fa-solid fa-qrcode text-8xl text-indigo-600"></i>
+            </div>
+            <p class="text-xs font-mono text-indigo-500 font-bold">ID: VERIFIED-CLIENT-2026</p>
+        </div>
+    </div>
+
+    <!-- MODAL SCRAPER AI SIMULATOR -->
+    <div x-show="showScraper" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4" style="display: none;">
+        <div class="bg-white dark:bg-darkTheme-card w-full max-w-md rounded-3xl shadow-2xl p-6 border border-gray-100 dark:border-gray-800">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base"><i class="fa-solid fa-robot mr-2 text-indigo-600"></i>Importar Artículos (IA)</h3>
+                <button @click="showScraper = false" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">La IA se conectará a las cuentas de proveedor para extraer nuevos productos duplicando automáticamente su precio base.</p>
+            <button @click="products.push({ id: Date.now(), name: 'Zapatos Deportivos Ejecutivos', category: 'men', price: 90.00, cost: 45.00, img: 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=600&q=80', source: 'SheIn' }); showScraper = false; alert('¡Producto importado y cotizado con éxito!');" class="w-full bg-indigo-600 text-white text-xs font-bold py-3 rounded-xl hover:bg-indigo-700 transition">
+                Ejecutar Scraper y Sincronizar Catálogo
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
