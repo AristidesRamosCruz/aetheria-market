@@ -1,293 +1,588 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aetheria Market - Ecosistema de Comercio Inteligente</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-      }
-    </script>
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen" x-data="storeData()">
+    <title>Tienda Virtual Aetheria Market</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #FF007A 0%, #7B2CBF 50%, #00F0FF 100%);
+            --bg-body: #F4F6F9;
+            --bg-card: #FFFFFF;
+            --text-main: #1A1A1A;
+            --text-muted: #666666;
+            --border-color: #E2E8F0;
+            --accent-color: #7B2CBF;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
 
-    <!-- Header / Navbar Principal -->
-    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">
-                    Aetheria Market
-                </h1>
-                <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full hidden sm:inline-block border border-slate-700">Ropa, Accesorios & Tech</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <!-- Botón de Panel IA & Ops -->
-                <button @click="aiPanel = true" class="bg-indigo-600/30 border border-indigo-500 text-indigo-300 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-indigo-600/50 transition flex items-center gap-1.5">
-                    🤖 IA Ops & Admin
-                </button>
-                <!-- Botón del Carrito -->
-                <button @click="cartOpen = true" class="relative bg-slate-800 p-2.5 rounded-lg hover:bg-slate-700 transition border border-slate-700">
-                    🛒 <span class="absolute -top-1 -right-1 bg-cyan-500 text-slate-950 text-xs font-bold px-1.5 rounded-full" x-text="cart.length"></span>
-                </button>
+        body.dark-mode {
+            --bg-body: #0F172A;
+            --bg-card: #1E293B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --accent-color: #00F0FF;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+
+        header { background: var(--bg-card); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 1400px; margin: 0 auto; }
+        
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 10px rgba(123,44,191,0.2);
+        }
+
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        .btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary-gradient); color: #FFF; border: none; }
+
+        nav { background: rgba(0,0,0,0.03); border-top: 1px solid var(--border-color); }
+        .nav-links { display: flex; justify-content: center; list-style: none; gap: 20px; padding: 12px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+
+        .filters-bar { max-width: 1400px; margin: 20px auto; padding: 0 5%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .search-select { padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); outline: none; }
+
+        .product-grid { max-width: 1400px; margin: 0 auto; padding: 0 5%; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        
+        .product-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: var(--shadow); }
+        .product-card:hover { transform: translateY(-5px); }
+
+        .img-container { position: relative; width: 100%; height: 260px; background: #EEE; overflow: hidden; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .watermark {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.45);
+            text-shadow: 0 0 4px rgba(0,0,0,0.6);
+            white-space: nowrap;
+            pointer-events: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .product-details { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title { font-weight: 700; margin-bottom: 5px; font-size: 1rem; }
+        .product-review { font-size: 0.82rem; color: var(--text-muted); font-style: italic; margin-bottom: 10px; }
+        .product-price { font-size: 1.25rem; font-weight: 800; color: #10B981; }
+
+        .badge-discount { position: absolute; top: 10px; right: 10px; background: #EF4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; }
+
+        .cart-drawer { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; background: var(--bg-card); border-left: 1px solid var(--border-color); z-index: 1000; transition: right 0.4s ease; padding: 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.2); }
+        .cart-drawer.open { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+
+        .cart-items { flex-grow: 1; overflow-y: auto; margin: 15px 0; }
+        .cart-item { display: flex; gap: 10px; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+
+        .receipt-box { background: rgba(0,0,0,0.03); border: 1px dashed var(--border-color); padding: 15px; border-radius: 8px; font-size: 0.85rem; margin-top: 10px; }
+        .receipt-line { display: flex; justify-content: space-between; margin-bottom: 5px; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--bg-card); border-radius: 12px; padding: 25px; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 1.5rem; }
+
+        .bot-widget { position: fixed; bottom: 20px; right: 20px; z-index: 950; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .bot-window { width: 320px; height: 420px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; display: none; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
+        .bot-window.active { display: flex; }
+        .bot-header { background: var(--accent-color); color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; }
+        .bot-messages { flex-grow: 1; padding: 10px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; }
+        .msg-bot { background: rgba(123,44,191,0.1); padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-start; }
+        .msg-user { background: #10B981; color: white; padding: 8px 12px; border-radius: 8px; max-width: 85%; align-self: flex-end; }
+        .bot-input-area { display: flex; border-top: 1px solid var(--border-color); }
+        .bot-input-area input { flex-grow: 1; padding: 10px; border: none; outline: none; background: transparent; color: var(--text-main); }
+
+        .wallet-address { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; word-break: break-all; margin: 10px 0; border: 1px solid var(--border-color); }
+        .qr-placeholder { display: flex; justify-content: center; margin: 15px 0; }
+        
+        .legal-text { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; text-align: justify; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+            <h1 class="brand-title">Aetheria Market</h1>
+            <div class="header-controls">
+                <button class="btn" onclick="toggleTheme()" id="btnTheme">🌙 Modo Oscuro</button>
+                <button class="btn" onclick="toggleLang()" id="btnLang">🌐 EN</button>
+                <button class="btn btn-primary" onclick="toggleCart()">🛒 <span id="cartCount">0</span></button>
             </div>
         </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" onclick="filterCat('all')" id="n-all">Todos</a></li>
+                <li><a href="#" onclick="filterCat('belleza')" id="n-beauty">Belleza & Cosmética</a></li>
+                <li><a href="#" onclick="filterCat('ropa')" id="n-clothes">Ropa</a></li>
+                <li><a href="#" onclick="filterCat('perfumes')" id="n-perfumes">Perfumes</a></li>
+                <li><a href="#" onclick="filterCat('zapatos')" id="n-shoes">Zapatos</a></li>
+                <li><a href="#" onclick="filterCat('relojes')" id="n-watches">Relojes</a></li>
+                <li><a href="#" onclick="openModal('modalSupplier')" id="n-supplier">Proveedores</a></li>
+                <li><a href="#" onclick="openModal('modalFeedback')" id="n-feedback">Quejas & Opinión</a></li>
+                <li><a href="#" onclick="openModal('modalLegal')" id="n-legal">Aviso Legal</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <!-- Banner de Patrocinadores y Publicidad para Marcas -->
-    <section class="bg-gradient-to-r from-purple-900/40 via-slate-900 to-cyan-900/40 border-b border-slate-800 py-2.5 px-4 text-center">
-        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
-            <span class="text-purple-300 font-medium flex items-center gap-1.5">
-                📢 ¿Eres marca o proveedor? Promociona tu producto aquí. Pagos aceptados en USDT.
-            </span>
-            <button @click="adModal = true" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded-md font-semibold transition shadow">
-                Contratar Publicidad
-            </button>
+    <div class="filters-bar">
+        <div>
+            <label for="sortPrice" id="lblSort">Ordenar por:</label>
+            <select id="sortPrice" class="search-select" onchange="sortProducts()">
+                <option value="asc" id="optAsc">Precio: Menor a Mayor</option>
+                <option value="desc" id="optDesc">Precio: Mayor a Menor (Exclusivo)</option>
+            </select>
         </div>
-    </section>
+        <button class="btn" onclick="openModal('modalQRVerification')" id="btnVerify">🛡️ Verificar Usuario Real (QR)</button>
+    </div>
 
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-extrabold mb-2 text-white">Catálogo Multilingüe Exclusivo</h2>
-            <p class="text-slate-400 text-sm sm:text-base">Moda, accesorios y artículos optimizados autónomamente mediante IA.</p>
+    <main class="product-grid" id="productGrid"></main>
+
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <h3 id="txtCartTitle">Carrito de Compras</h3>
+            <button class="btn" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        
+        <div class="receipt-box" id="receiptBox">
+            <div class="receipt-line"><span id="lblSubtotal">Subtotal Base:</span> <span id="rSubtotal">0.00 USDT</span></div>
+            <div class="receipt-line"><span id="lblImpsv">IMPSV (5%):</span> <span id="rImpsv">0.00 USDT</span></div>
+            <div class="receipt-line"><span id="lblDelivery">Imp. Entrega (3%):</span> <span id="rDelivery">0.00 USDT</span></div>
+            <div class="receipt-line" style="color: #EF4444;"><span id="lblCoupon">Cupón (2%):</span> <span id="rCoupon">-0.00 USDT</span></div>
+            <div class="receipt-line" style="color: #10B981;"><span id="lblBulk">Desc. Especial (>100 USDT & >3 itm 3.4%):</span> <span id="rBulk">-0.00 USDT</span></div>
+            <hr style="margin: 8px 0; border: 0; border-top: 1px solid var(--border-color);">
+            <div class="receipt-line" style="font-weight: bold; font-size: 1rem;"><span id="lblTotal">Total a Pagar:</span> <span id="rTotal">0.00 USDT</span></div>
         </div>
 
-        <!-- Cuadro de Cupón Activo -->
-        <div class="max-w-md mx-auto mb-10 bg-slate-900 border border-slate-800 p-3.5 rounded-xl flex items-center justify-between text-xs sm:text-sm shadow-inner">
-            <span class="text-slate-300">🎟️ Cupón de Descuento: <strong class="text-cyan-400">AETHERIA100</strong></span>
-            <button @click="applyCoupon()" class="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-lg border border-cyan-500/30 hover:bg-cyan-500/30 font-medium transition">Aplicar</button>
-        </div>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="checkout()" id="btnCheckout">Pagar con USDT (Red TRON)</button>
+    </div>
 
-        <!-- Grid de Productos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <template x-for="product in products" :key="product.id">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition">
-                    <div>
-                        <div class="h-44 bg-slate-950 rounded-lg mb-4 flex items-center justify-center text-5xl border border-slate-800/60">
-                            <span x-text="product.emoji"></span>
-                        </div>
-                        <h3 class="font-bold text-lg mb-1 text-slate-100" x-text="product.name"></h3>
-                        <p class="text-slate-400 text-xs sm:text-sm mb-4" x-text="product.desc"></p>
-                    </div>
-                    <div class="flex items-center justify-between mt-2 pt-3 border-t border-slate-800/80">
-                        <div>
-                            <span class="text-cyan-400 font-bold text-lg" x-text="'$' + product.price + ' USD'"></span>
-                            <span class="text-[10px] block text-slate-500">Acepta USD / USDT</span>
-                        </div>
-                        <button @click="addToCart(product)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs sm:text-sm transition">
-                            Añadir
-                        </button>
-                    </div>
-                </div>
-            </template>
-        </div>
-    </main>
-
-    <!-- Modal del Carrito de Compras -->
-    <div x-show="cartOpen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-bold text-white">🛒 Mi Carrito</h3>
-                <button @click="cartOpen = false" class="text-slate-400 hover:text-white">✕</button>
+    <div class="bot-widget">
+        <div class="bot-window" id="botWindow">
+            <div class="bot-header">
+                <span id="botTitle">Asistente Aetheria IA & Registro</span>
+                <span style="cursor:pointer" onclick="toggleBot()">✕</span>
             </div>
-            <div class="max-h-60 overflow-y-auto space-y-2">
-                <template x-if="cart.length === 0">
-                    <p class="text-sm text-slate-500 text-center py-4">El carrito está vacío.</p>
-                </template>
-                <template x-for="(item, index) in cart" :key="index">
-                    <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-sm">
-                        <span x-text="item.name"></span>
-                        <span class="text-cyan-400 font-bold" x-text="'$' + item.price"></span>
-                    </div>
-                </template>
+            <div class="bot-messages" id="botMessages"></div>
+            <div class="bot-input-area">
+                <input type="text" id="botInput" placeholder="Escribe tu duda..." onkeypress="handleBotKey(event)">
+                <button class="btn" onclick="sendBotMsg()">➔</button>
             </div>
-            <div class="border-t border-slate-800 pt-3 flex justify-between items-center">
-                <span class="font-bold text-sm">Total a Pagar:</span>
-                <span class="text-cyan-400 font-bold text-lg" x-text="'$' + getTotal() + ' USD / USDT'"></span>
-            </div>
-            <button @click="alert('Redirigiendo a pasarela de pago segura en USD / USDT...'); cartOpen = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Proceder al Pago</button>
+        </div>
+        <button class="btn btn-primary" style="border-radius: 50%; width: 50px; height: 50px; padding:0; justify-content:center;" onclick="toggleBot()">🤖</button>
+    </div>
+
+    <!-- Modales -->
+    <div class="modal" id="modalCheckout">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalCheckout')">✕</span>
+            <h3 id="txtPayTitle">Pago con USDT (Red TRON)</h3>
+            <p style="margin: 10px 0; font-size:0.9rem;" id="txtPayDesc">Transfiere el monto exacto de tu recibo a la siguiente dirección de la red TRON (TRC-20):</p>
+            <div class="wallet-address">TVAS4UkAGaUx6UuaFxq2DAvkDskJiHevn3</div>
+            <div class="qr-placeholder" id="qrCheckout"></div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="confirmPayment()" id="btnConfirmPay">Confirmar Transacción</button>
         </div>
     </div>
 
-    <!-- Botón Flotante del Bot Asistente IA -->
-    <div class="fixed bottom-6 right-6 z-40">
-        <button @click="chatOpen = !chatOpen" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-105">
-            💬
-        </button>
-    </div>
-
-    <!-- Modal del Bot de Atención al Cliente (IA) -->
-    <div x-show="chatOpen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full sm:max-w-md h-[520px] sm:rounded-2xl flex flex-col shadow-2xl">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/40 sm:rounded-t-2xl">
-                <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <h3 class="font-bold text-sm text-white">Asistente Virtual Aetheria (IA)</h3>
-                </div>
-                <button @click="chatOpen = false" class="text-slate-400 hover:text-white">✕</button>
-            </div>
-            <div class="flex-1 p-4 overflow-y-auto space-y-3 text-xs sm:text-sm">
-                <div class="bg-slate-800/80 p-3 rounded-xl max-w-[85%] text-slate-200">
-                    ¡Hola! Soy el bot inteligente de Aetheria Market. Puedo responder tus dudas sobre envíos, pagos en USDT o conectar con atención al cliente. ¿En qué puedo ayudarte?
-                </div>
-                <template x-for="msg in chatMessages">
-                    <div :class="msg.sender === 'user' ? 'ml-auto bg-cyan-600 text-white' : 'bg-slate-800 text-slate-200'" class="p-3 rounded-xl max-w-[85%]" x-text="msg.text"></div>
-                </template>
-            </div>
-            <div class="p-3 border-t border-slate-800 bg-slate-950/40 flex gap-2">
-                <input type="text" x-model="chatInput" @keyup.enter="sendChatMessage()" placeholder="Escribe tu duda aquí..." class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-cyan-500">
-                <button @click="sendChatMessage()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm transition">Enviar</button>
-            </div>
+    <div class="modal" id="modalSupplier">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalSupplier')">✕</span>
+            <h3 id="txtSupTitle">Portal de Publicidad para Proveedores</h3>
+            <p style="margin: 10px 0; font-size:0.85rem;" id="txtSupDesc">Promociona tus productos en Aetheria Market. Tarifas de espacio publicitario:</p>
+            <ul style="margin-left: 20px; font-size:0.85rem; margin-bottom: 10px;">
+                <li>Por Minuto: 0.10 USDT</li>
+                <li>Por Hora: 5.00 USDT</li>
+                <li>Por Día: 25.00 USDT</li>
+                <li>Por Semana: 120.00 USDT</li>
+            </ul>
+            <p style="font-size:0.8rem; color:#10B981; margin-bottom: 10px;" id="txtSupDisc">✨ ¡Descuento automático del 1.5% si tu contrato supera los 5 días!</p>
+            <p style="font-size:0.85rem;">Depósito de Publicidad (Red TRON via Keeper App):</p>
+            <div class="wallet-address">TAQ5Gnezeftivkok2mrLGWMbvhgJNaRN8f</div>
         </div>
     </div>
 
-    <!-- Modal de IA Ops & Admin (Optimización de pedidos y subida de productos) -->
-    <div x-show="aiPanel" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 space-y-5 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">⚙️ Panel de Automatización IA</h3>
-                <button @click="aiPanel = false" class="text-slate-400 hover:text-white">✕</button>
-            </div>
-            <div class="space-y-4 text-xs sm:text-sm text-slate-300">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-cyan-400 mb-1">📦 Subida Autónoma de Productos</h4>
-                    <p class="text-slate-400 mb-3 text-xs">La IA analiza catálogos externos, reescribe características y sube artículos automáticamente bajo la marca de la tienda.</p>
-                    <button @click="aiPublishProduct()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg transition shadow">Importar y Publicar Producto con IA</button>
-                </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <h4 class="font-bold text-cyan-400 mb-1">⚡ Optimización de Pedidos y Logística</h4>
-                    <p class="text-slate-400 mb-3 text-xs">Agrupa despachos y optimiza los flujos de comisión para envíos más rápidos.</p>
-                    <button @click="aiOptimizeOrders()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2.5 rounded-lg transition border border-slate-700">Optimizar Pedidos Activos</button>
-                </div>
+    <div class="modal" id="modalFeedback">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalFeedback')">✕</span>
+            <h3 id="txtFeedTitle">Buzón de Quejas y Sugerencias</h3>
+            <textarea style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main);" id="txtFeedbackInput" placeholder="Déjanos tu opinión..."></textarea>
+            <button class="btn btn-primary" style="width: 100%;" onclick="submitFeedback()" id="btnSendFeed">Enviar Opinión</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalQRVerification">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-modal" onclick="closeModal('modalQRVerification')">✕</span>
+            <h3 id="txtQRTitle">Verificación Anti-Bot</h3>
+            <p style="font-size:0.85rem; margin: 10px 0;" id="txtQRDesc">Escanea este código QR dinámico desde tu dispositivo móvil para validar que eres un usuario humano real.</p>
+            <div class="qr-placeholder" id="qrVerifyContainer"></div>
+            <button class="btn btn-primary" onclick="closeModal('modalQRVerification')" id="btnVerified">Usuario Validado</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalLegal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modalLegal')">✕</span>
+            <h3 style="margin-bottom: 10px;" id="txtLegalTitle">Marco Jurídico y Derechos de Autor</h3>
+            <div class="legal-text" id="txtLegalBody">
+                <p><strong>PRIMERO: PROPIEDAD INTELECTUAL Y DERECHOS RESERVADOS.</strong> Todo el material visual, marcas de agua, interfaces de código, diseños arquitectónicos y logotipos exhibidos en este portal web constituyen propiedad exclusiva de <em>Tienda Virtual Aetheria Market</em>. Queda estrictamente prohibida la reproducción parcial o total sin consentimiento previo expreso y por escrito.</p><br>
+                <p><strong>SEGUNDO: RESPONSABILIDAD DE ADQUISICIÓN Y TERCEROS.</strong> Cada cliente, usuario o consumidor asume de manera unívoca la responsabilidad jurídica y financiera sobre los productos seleccionados y adquiridos. Los proveedores externos registrados son legalmente independientes y plenamente responsables de la autenticidad, calidad y garantías de sus artículos.</p><br>
+                <p><strong>TERCERO: EXENCIÓN DE RESPONSABILIDAD DE LOS CREADORES.</strong> La entidad administradora y los desarrolladores técnicos de esta plataforma quedan absolutamente exonerados, indemnes y libres de cualquier acción legal, querella, demanda o reclamación por daños directos o indirectos derivados de demoras de envío, extravíos logísticos, fluctuaciones cambiarias en la red TRON USDT, o por actuaciones indebidas y maliciosas ejercidas por terceros o personas que atenten contra la identidad e integridad de la página, sus trabajadores o sus clientes.</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal del Buzón de Proveedores -->
-    <div x-show="supplierModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-base font-bold text-white">🤝 Buzón para Nuevos Proveedores</h3>
-                <button @click="supplierModal = false" class="text-slate-400 hover:text-white">✕</button>
-            </div>
-            <p class="text-xs text-slate-400">¿Tienes un producto que quieras comercializar en Aetheria Market? Déjanos tus datos.</p>
-            <div class="space-y-3">
-                <input type="text" placeholder="Nombre de la marca / empresa" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-cyan-500 focus:outline-none">
-                <input type="text" placeholder="Contacto (Telegram @usuario / WhatsApp)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-cyan-500 focus:outline-none">
-                <textarea placeholder="Descripción del producto o catálogo..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white h-24 focus:border-cyan-500 focus:outline-none"></textarea>
-                <button @click="alert('¡Propuesta recibida! El equipo comercial se pondrá en contacto.'); supplierModal = false;" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-lg transition">Enviar Propuesta</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Publicidad y Patrocinios -->
-    <div x-show="adModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-base font-bold text-white">📢 Contratar Espacio Publicitario</h3>
-                <button @click="adModal = false" class="text-slate-400 hover:text-white">✕</button>
-            </div>
-            <p class="text-xs text-slate-400">Promociona tu marca en nuestra portada. Pagos rápidos procesados en USDT.</p>
-            <div class="space-y-3">
-                <input type="text" placeholder="Nombre de tu marca" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-purple-500 focus:outline-none">
-                <input type="text" placeholder="Enlace web de tu producto" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:border-purple-500 focus:outline-none">
-                <select class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs sm:text-sm text-slate-300 focus:border-purple-500 focus:outline-none">
-                    <option>Banner Superior (7 días) - $50 USDT</option>
-                    <option>Destacado en Catálogo (30 días) - $120 USDT</option>
-                </select>
-                <button @click="alert('Solicitud de publicidad enviada. Te contactaremos para procesar el pago en USDT.'); adModal = false;" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-lg transition">Pagar en USDT</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer / Canales de Atención al Cliente Directos -->
-    <footer class="border-t border-slate-800 bg-slate-900/40 mt-16 py-10 px-4">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <p class="font-bold text-lg text-white mb-1">Aetheria Market</p>
-                <p class="text-xs text-slate-400">Ecosistema de comercio multilingüe optimizado con IA.</p>
-            </div>
-            <!-- Canales: WhatsApp, Telegram (@Ristcruz), Discord, Buzón de Proveedores -->
-            <div class="flex flex-wrap gap-3 text-xs sm:text-sm items-center justify-center">
-                <a href="https://wa.me/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
-                    🟢 WhatsApp Soporte
-                </a>
-                <a href="https://t.me/Ristcruz" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
-                    ✈️ Telegram (@Ristcruz)
-                </a>
-                <a href="https://discord.gg/" target="_blank" class="bg-slate-800 hover:bg-slate-700 px-3.5 py-2 rounded-lg flex items-center gap-2 transition border border-slate-700/60 text-slate-200">
-                    🎮 Discord Comunitario
-                </a>
-                <button @click="supplierModal = true" class="bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 px-3.5 py-2 rounded-lg font-medium transition">
-                    📦 Buzón Proveedores
-                </button>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Script Alpine.js -->
     <script>
-        function storeData() {
-            return {
-                cartOpen: false,
-                chatOpen: false,
-                aiPanel: false,
-                supplierModal: false,
-                adModal: false,
-                cart: [],
-                chatInput: '',
-                chatMessages: [],
-                products: [
-                    { id: 1, name: 'Gafas Smart AR Urban', desc: 'Realidad aumentada y diseño ergonómico exclusivo.', price: '149.99', emoji: '🕶️' },
-                    { id: 2, name: 'Chaqueta Cyber Techwear', desc: 'Impermeable, múltiples bolsillos y estilo futurista.', price: '89.50', emoji: '🧥' },
-                    { id: 3, name: 'Reloj Crono Aetheria', desc: 'Sincronización multi-cadena y biométrica avanzada.', price: '59.99', emoji: '⌚' }
-                ],
-                addToCart(product) {
-                    this.cart.push(product);
-                    alert('¡Producto añadido al carrito!');
-                },
-                getTotal() {
-                    return this.cart.reduce((sum, item) => sum + parseFloat(item.price), 0).toFixed(2);
-                },
-                applyCoupon() {
-                    alert('¡Cupón AETHERIA100 validado correctamente!');
-                },
-                sendChatMessage() {
-                    if(!this.chatInput.trim()) return;
-                    this.chatMessages.push({ sender: 'user', text: this.chatInput });
-                    let userMsg = this.chatInput;
-                    this.chatInput = '';
-                    setTimeout(() => {
-                        let reply = "Recuerda que para atención personalizada puedes contactarnos en Telegram (@Ristcruz) o por WhatsApp.";
-                        if(userMsg.toLowerCase().includes('pago') || userMsg.toLowerCase().includes('usdt')) {
-                            reply = "Aceptamos pagos en USD y criptomonedas USDT de forma segura.";
-                        } else if(userMsg.toLowerCase().includes('envio') || userMsg.toLowerCase().includes('envío')) {
-                            reply = "Nuestros envíos son gestionados automáticamente para garantizar máxima rapidez.";
-                        }
-                        this.chatMessages.push({ sender: 'bot', text: reply });
-                    }, 800);
-                },
-                aiPublishProduct() {
-                    let externalItems = [
-                        { id: 4, name: 'Sudadera Oversize Minimal', desc: 'Diseño textil importado y optimizado por IA.', price: '45.00', emoji: '👕' },
-                        { id: 5, name: 'Mochila Antirrobo LED', desc: 'Puerto USB integrado y paneles inteligentes.', price: '75.00', emoji: '🎒' }
-                    ];
-                    let randomItem = externalItems[Math.floor(Math.random() * externalItems.length)];
-                    this.products.push(randomItem);
-                    alert('¡La IA importó y publicó un nuevo producto: ' + randomItem.name + '!');
-                    this.aiPanel = false;
-                },
-                aiOptimizeOrders() {
-                    alert('¡Optimización logarítmica completada! Cola de pedidos en ruta.');
-                    this.aiPanel = false;
+        const i18n = {
+            es: {
+                cartTitle: "Carrito de Compras",
+                subtotal: "Subtotal Base:",
+                impsv: "IMPSV (5%):",
+                delivery: "Imp. Entrega (3%):",
+                coupon: "Cupón (2%):",
+                bulk: "Desc. Especial (>100 USDT & >3 itm 3.4%):",
+                total: "Total a Pagar:",
+                checkout: "Pagar con USDT (Red TRON)",
+                payTitle: "Pago con USDT (Red TRON)",
+                payDesc: "Transfiere el monto exacto de tu recibo a la siguiente dirección de la red TRON (TRC-20):",
+                confirmPay: "Confirmar Transacción",
+                supTitle: "Portal de Publicidad para Proveedores",
+                supDesc: "Promociona tus productos en Aetheria Market. Tarifas de espacio publicitario:",
+                supDisc: "✨ ¡Descuento automático del 1.5% si tu contrato supera los 5 días!",
+                feedTitle: "Buzón de Quejas y Sugerencias",
+                sendFeed: "Enviar Opinión",
+                qrTitle: "Verificación Anti-Bot",
+                qrDesc: "Escanea este código QR dinámico desde tu dispositivo móvil para validar que eres un usuario humano real.",
+                verified: "Usuario Validado",
+                legalTitle: "Marco Jurídico y Derechos de Autor",
+                sortLbl: "Ordenar por:",
+                sortAsc: "Precio: Menor a Mayor",
+                sortDesc: "Precio: Mayor a Menor (Exclusivo)",
+                nAll: "Todos", nBeauty: "Belleza & Cosmética", nClothes: "Ropa", nPerfumes: "Perfumes", nShoes: "Zapatos", nWatches: "Relojes", nSupplier: "Proveedores", nFeedback: "Quejas & Opinión", nLegal: "Aviso Legal",
+                botTitle: "Asistente Aetheria IA & Registro"
+            },
+            en: {
+                cartTitle: "Shopping Cart",
+                subtotal: "Base Subtotal:",
+                impsv: "IMPSV Tax (5%):",
+                delivery: "Delivery Tax (3%):",
+                coupon: "Coupon (2%):",
+                bulk: "Bulk Discount (>100 USDT & >3 itm 3.4%):",
+                total: "Total Amount:",
+                checkout: "Pay with USDT (TRON Network)",
+                payTitle: "USDT Payment (TRON Network)",
+                payDesc: "Transfer the exact receipt amount to the following TRON (TRC-20) address:",
+                confirmPay: "Confirm Transaction",
+                supTitle: "Supplier Advertising Portal",
+                supDesc: "Promote your products on Aetheria Market. Advertising rates:",
+                supDisc: "✨ Automatic 1.5% discount for contracts over 5 days!",
+                feedTitle: "Complaints & Feedback Box",
+                sendFeed: "Submit Feedback",
+                qrTitle: "Anti-Bot Verification",
+                qrDesc: "Scan this dynamic QR code from your mobile device to verify you are a real human.",
+                verified: "User Verified",
+                legalTitle: "Legal Framework & Copyright",
+                sortLbl: "Sort by:",
+                sortAsc: "Price: Low to High",
+                sortDesc: "Price: High to Low (Exclusive)",
+                nAll: "All", nBeauty: "Beauty & Cosmetics", nClothes: "Clothing", nPerfumes: "Perfumes", nShoes: "Shoes", nWatches: "Watches", nSupplier: "Suppliers", nFeedback: "Feedback", nLegal: "Legal Notice",
+                botTitle: "Aetheria AI Assistant & Onboarding"
+            }
+        };
+
+        let currentLang = 'es';
+        let cart = [];
+        let products = [];
+
+        const categories = ['belleza', 'ropa', 'perfumes', 'zapatos', 'relojes'];
+        const brands = ['Aetheria Luxe', 'Elegance Paris', 'UrbanVibe', 'VelvetTouch', 'Aura Glow'];
+
+        function generate300Products() {
+            let list = [];
+            let id = 1;
+            for (let c of categories) {
+                for (let i = 1; i <= 60; i++) {
+                    let basePrice = Math.floor(Math.random() * 250) + 12;
+                    let titleEs = `${c.charAt(0).toUpperCase() + c.slice(1)} ${brands[i % 5]} Mod-${i}`;
+                    list.push({
+                        id: id++,
+                        category: c,
+                        title: titleEs,
+                        price: basePrice,
+                        review: `Reseña: Calidad premium verificada. Tallas y tonos disponibles. Vendedor certificado.`,
+                        img: `https://picsum.photos/seed/${c}${i}/300/300`,
+                        model: `V-${100+i}`,
+                        discount: i % 4 === 0 ? 15 : 0
+                    });
                 }
             }
+            return list;
         }
+
+        products = generate300Products();
+
+        function renderProducts(items) {
+            const container = document.getElementById('productGrid');
+            container.innerHTML = '';
+            items.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    ${p.discount > 0 ? `<div class="badge-discount">-${p.discount}%</div>` : ''}
+                    <div class="img-container">
+                        <img src="${p.img}" class="product-img" alt="${p.title}" loading="lazy">
+                        <div class="watermark">AETHERIA MARKET</div>
+                    </div>
+                    <div class="product-details">
+                        <div class="product-title">${p.title}</div>
+                        <div class="product-review">"${p.review}"</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                            <span class="product-price">${p.price} USDT</span>
+                            <button class="btn btn-primary" onclick="addToCart(${p.id})">+ Agregar</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function sortProducts() {
+            const val = document.getElementById('sortPrice').value;
+            let sorted = [...products];
+            if (val === 'asc') sorted.sort((a,b) => a.price - b.price);
+            if (val === 'desc') sorted.sort((a,b) => b.price - a.price);
+            renderProducts(sorted);
+        }
+
+        function filterCat(cat) {
+            if (cat === 'all') renderProducts(products);
+            else {
+                let filtered = products.filter(p => p.category === cat);
+                renderProducts(filtered);
+            }
+        }
+
+        function addToCart(id) {
+            let item = products.find(p => p.id === id);
+            cart.push(item);
+            updateCart();
+            animateCartBtn();
+        }
+
+        function animateCartBtn() {
+            let countSpan = document.getElementById('cartCount');
+            countSpan.style.transform = 'scale(1.5)';
+            setTimeout(() => countSpan.style.transform = 'scale(1)', 200);
+        }
+
+        function updateCart() {
+            document.getElementById('cartCount').innerText = cart.length;
+            const container = document.getElementById('cartItems');
+            container.innerHTML = '';
+            
+            let subtotal = 0;
+            cart.forEach((item, index) => {
+                subtotal += item.price;
+                let div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <div>
+                        <div style="font-weight:bold; font-size:0.9rem;">${item.title}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">${item.price} USDT</div>
+                    </div>
+                    <button class="btn" style="padding:2px 8px; font-size:0.75rem;" onclick="removeFromCart(${index})">✕</button>
+                `;
+                container.appendChild(div);
+            });
+
+            let impsv = subtotal * 0.05;
+            let delivery = subtotal > 0 ? subtotal * 0.03 : 0;
+            let coupon = subtotal * 0.02;
+            
+            let bulkDiscount = 0;
+            if (subtotal > 100 && cart.length >= 3) {
+                bulkDiscount = subtotal * 0.034;
+            }
+
+            let total = subtotal + impsv + delivery - coupon - bulkDiscount;
+
+            document.getElementById('rSubtotal').innerText = subtotal.toFixed(2) + ' USDT';
+            document.getElementById('rImpsv').innerText = impsv.toFixed(2) + ' USDT';
+            document.getElementById('rDelivery').innerText = delivery.toFixed(2) + ' USDT';
+            document.getElementById('rCoupon').innerText = '-' + coupon.toFixed(2) + ' USDT';
+            document.getElementById('rBulk').innerText = '-' + bulkDiscount.toFixed(2) + ' USDT';
+            document.getElementById('rTotal').innerText = (total > 0 ? total : 0).toFixed(2) + ' USDT';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('open');
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            let btn = document.getElementById('btnTheme');
+            btn.innerText = document.body.classList.contains('dark-mode') ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            document.getElementById('btnLang').innerText = currentLang === 'es' ? '🌐 EN' : '🌐 ES';
+            let t = i18n[currentLang];
+            
+            document.getElementById('txtCartTitle').innerText = t.cartTitle;
+            document.getElementById('lblSubtotal').innerText = t.subtotal;
+            document.getElementById('lblImpsv').innerText = t.impsv;
+            document.getElementById('lblDelivery').innerText = t.delivery;
+            document.getElementById('lblCoupon').innerText = t.coupon;
+            document.getElementById('lblBulk').innerText = t.bulk;
+            document.getElementById('lblTotal').innerText = t.total;
+            document.getElementById('btnCheckout').innerText = t.checkout;
+            document.getElementById('txtPayTitle').innerText = t.payTitle;
+            document.getElementById('txtPayDesc').innerText = t.payDesc;
+            document.getElementById('btnConfirmPay').innerText = t.confirmPay;
+            document.getElementById('txtSupTitle').innerText = t.supTitle;
+            document.getElementById('txtSupDesc').innerText = t.supDesc;
+            document.getElementById('txtSupDisc').innerText = t.supDisc;
+            document.getElementById('txtFeedTitle').innerText = t.feedTitle;
+            document.getElementById('btnSendFeed').innerText = t.sendFeed;
+            document.getElementById('txtQRTitle').innerText = t.qrTitle;
+            document.getElementById('txtQRDesc').innerText = t.qrDesc;
+            document.getElementById('btnVerified').innerText = t.verified;
+            document.getElementById('txtLegalTitle').innerText = t.legalTitle;
+            document.getElementById('lblSort').innerText = t.sortLbl;
+            document.getElementById('optAsc').innerText = t.sortAsc;
+            document.getElementById('optDesc').innerText = t.sortDesc;
+            document.getElementById('n-all').innerText = t.nAll;
+            document.getElementById('n-beauty').innerText = t.nBeauty;
+            document.getElementById('n-clothes').innerText = t.nClothes;
+            document.getElementById('n-perfumes').innerText = t.nPerfumes;
+            document.getElementById('n-shoes').innerText = t.nShoes;
+            document.getElementById('n-watches').innerText = t.nWatches;
+            document.getElementById('n-supplier').innerText = t.nSupplier;
+            document.getElementById('n-feedback').innerText = t.nFeedback;
+            document.getElementById('n-legal').innerText = t.nLegal;
+            document.getElementById('botTitle').innerText = t.botTitle;
+        }
+
+        function toggleBot() {
+            let window = document.getElementById('botWindow');
+            window.classList.toggle('active');
+            if (window.classList.contains('active') && document.getElementById('botMessages').children.length === 0) {
+                initBotOnboarding();
+            }
+        }
+
+        function initBotOnboarding() {
+            appendBotMsg("¡Hola! 👋 Bienvenido a Aetheria Market. Soy tu asistente de inscripción e IA de compras.");
+            setTimeout(() => {
+                appendBotMsg("📌 **Compra Rápida**: Envíos prioritarios a todo el país. 🚚\n📌 **Cupones**: Tienes un 2% de descuento automático en tu carrito.\n📌 **Fechas Especiales**: ¡Descuento extra del 3.4% en compras mayores a 100 USDT de 3+ artículos!");
+            }, 1000);
+        }
+
+        function appendBotMsg(text) {
+            let msgs = document.getElementById('botMessages');
+            let div = document.createElement('div');
+            div.className = 'msg-bot';
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            msgs.appendChild(div);
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function sendBotMsg() {
+            let input = document.getElementById('botInput');
+            let val = input.value.trim();
+            if(!val) return;
+
+            let msgs = document.getElementById('botMessages');
+            let userDiv = document.createElement('div');
+            userDiv.className = 'msg-user';
+            userDiv.innerText = val;
+            msgs.appendChild(userDiv);
+
+            input.value = '';
+            msgs.scrollTop = msgs.scrollHeight;
+
+            setTimeout(() => {
+                let reply = "Entiendo tu consulta. Como IA de Aetheria Market, gestiono precios, cupones y la optimización de tus recibos. ¿Deseas ayuda con el carrito o un producto?";
+                if(val.toLowerCase().includes('envio') || val.toLowerCase().includes('rápido')) {
+                    reply = "El envío rápido prioriza tu pedido para entrega expresa con impuesto reducido del 3%.";
+                } else if(val.toLowerCase().includes('pago') || val.toLowerCase().includes('usdt')) {
+                    reply = "Aceptamos pagos en USDT mediante la red TRON (TRC-20) a nuestra billetera oficial.";
+                }
+                appendBotMsg(reply);
+            }, 800);
+        }
+
+        function handleBotKey(e) {
+            if(e.key === 'Enter') sendBotMsg();
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            if(id === 'modalQRVerification') generateSVGQR('qrVerifyContainer');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function checkout() {
+            if(cart.length === 0) {
+                alert("El carrito está vacío.");
+                return;
+            }
+            openModal('modalCheckout');
+            generateSVGQR('qrCheckout');
+        }
+
+        function generateSVGQR(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <svg width="150" height="150" viewBox="0 0 100 100" style="background:#FFF; padding:10px; border-radius:8px;">
+                    <path d="M0,0 h30 v30 h-30 z M40,0 h10 v10 h-10 z M60,0 h40 v40 h-40 z M10,10 h10 v10 h-10 z M70,10 h20 v20 h-20 z M0,60 h40 v40 h-40 z M10,70 h20 v20 h-20 z M50,50 h20 v10 h-20 z M80,50 h20 v20 h-20 z M50,70 h10 v30 h-10 z M70,80 h30 v20 h-30 z" fill="#000"/>
+                </svg>
+            `;
+        }
+
+        function confirmPayment() {
+            alert("¡Transacción registrada exitosamente en la red TRON! Procesando orden.");
+            cart = [];
+            updateCart();
+            closeModal('modalCheckout');
+            toggleCart();
+        }
+
+        function submitFeedback() {
+            let text = document.getElementById('txtFeedbackInput').value;
+            if(!text) return;
+            alert("¡Gracias por tu opinión! Nos ayuda a mejorar Aetheria Market.");
+            document.getElementById('txtFeedbackInput').value = '';
+            closeModal('modalFeedback');
+        }
+
+        // Inicialización
+        renderProducts(products);
     </script>
 </body>
 </html>
